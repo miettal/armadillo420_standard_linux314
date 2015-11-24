@@ -1,0 +1,117 @@
+#
+# src/target/command/Kconfig
+#
+
+menu "Commands"
+
+comment "Standard Commands"
+
+config CMD_BOOT
+	bool "boot/linux"
+	default y
+
+config CMD_DOWNLOAD
+	bool "download"
+	default y
+	select CMD_MEMMAP
+
+config CMD_FROB
+	bool "frob"
+	default y
+
+config CMD_HELP
+	bool "help"
+	default y
+
+config CMD_JUMP
+	bool "jump"
+
+config CMD_MEDIUM
+	bool "medium"
+	default y
+
+config CMD_MEMMAP
+	bool "memmap"
+	default y
+
+config CMD_UPLOAD
+	bool "upload"
+
+config CMD_VERSION
+	bool "version"
+	default y
+
+comment "Optional Commands"
+
+config CMD_INFO
+	bool "info"
+
+config CMD_MAC
+	bool "mac"
+	depends on ETHERNET
+
+config CMD_MAP
+	bool "map"
+	depends on SYSTEM_DEBUGGING
+
+config CMD_MD5SUM
+	bool "md5sum"
+
+config CMD_PASSWD
+	bool "passwd"
+	select CMD_SETPARAM
+
+config CMD_SETBOOTDEVICE
+	bool "setbootdevice"
+	select CMD_SETPARAM
+
+config CMD_SETBOOTDEVICE_DEFAULT_DEVICE
+	string "Default Device"
+	depends on CMD_SETBOOTDEVICE
+
+config CMD_SETBOOTDEVICE_FLASH
+	bool "\"flash\" support"
+	depends on CMD_SETBOOTDEVICE && FLASH
+	default y
+
+config CMD_SETBOOTDEVICE_HD
+	bool "\"hd[abcd]\" support"
+	depends on CMD_SETBOOTDEVICE && COMPACTFLASH
+
+config CMD_SETBOOTDEVICE_MMCSD
+	bool "\"mmcblk\" support"
+	depends on CMD_SETBOOTDEVICE && MMCSD
+
+config CMD_SETBOOTDEVICE_TFTP
+	bool "\"tftp\" support"
+	depends on CMD_SETBOOTDEVICE && CMD_TFTPBOOT
+
+config CMD_SETCLOCK
+	bool "setclock"
+	depends on PLATFORM_ARMADILLO5X0
+	select CMD_SETPARAM
+
+config CMD_SETENV
+	bool "setenv/clearenv"
+	select CMD_SETPARAM
+
+config CMD_SETPARAM
+	bool
+
+config CMD_TFTPBOOT
+	bool "tftpboot"
+	depends on ETHERNET
+	select NET_UDP_TFTP
+
+config CMD_TFTPDL
+	bool "tftpdl"
+	depends on ETHERNET
+	select NET_UDP_TFTP
+
+comment "Optional Functions"
+
+config FUNC_DHCPC
+	bool "Support for DHCP Client"
+	depends on ETHERNET && (CMD_TFTPBOOT || CMD_TFTPDL)
+
+endmenu

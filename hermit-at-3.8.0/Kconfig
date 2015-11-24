@@ -1,0 +1,9 @@
+#
+# Kconfig
+#
+
+mainmenu "Hermit-at Configuration"
+
+source "src/target/Kconfig"
+
+source "src/host/Kconfig"

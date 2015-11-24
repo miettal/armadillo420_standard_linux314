@@ -1,0 +1,19 @@
+#
+# src/host/Kconfig
+#
+
+comment "HOST"
+
+config HOST_BUILD
+	bool "build an application for hosts"
+
+menu "Host Configurations"
+	depends on HOST_BUILD
+
+config HOST_FUNC_FIRMUPDATE
+	bool "firmupdate function support"
+	default y
+	help
+	  if you want to support Armadillo-J firmware update command
+
+endmenu

@@ -1,0 +1,8 @@
+#! /bin/sh -e
+
+update-alternatives --quiet \
+    --install /usr/bin/hermit hermit /usr/bin/hermit-@VVER@ @VPRI@
+
+#DEBHELPER#
+
+exit 0

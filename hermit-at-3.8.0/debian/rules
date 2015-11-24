@@ -1,0 +1,46 @@
+#!/usr/bin/make -f
+#
+# debian/rules file for the hermit-at.
+#
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+
+DEB_INSTALL_DOCS_hermit-at := doc/README.*
+DEB_INSTALL_MANPAGES_hermit-at := doc/hermit.1
+
+install-prefix := $(DEB_DESTDIR)usr
+install-opt := INSTALLPREFIX=$(install-prefix)
+
+images := $(subst configs/,,$(wildcard configs/*_defconfig))
+
+VDEF := $(strip $(shell dpkg-parsechangelog | awk -F: '/^Version:/ {print $$NF}'))
+VMAJOR := $(shell echo $(VDEF) | awk -F. '{print $$1}')
+VMINOR := $(shell echo $(VDEF) | awk -F. '{print $$2}' | sed -e 's/\([0-9]*\).*/\1/')
+VVER := $(shell echo $(VMAJOR) $(VMINOR) | awk '{printf("%d.%d", $$1, $$2)}')
+VPRI := $(shell echo $(VMAJOR) $(VMINOR) | awk '{printf("%2d%02d", $$1, $$2)}')
+
+clean::
+	$(MAKE) -s scrub
+	rm -f debian/hermit-at-*.postinst debian/hermit-at-*.prerm
+
+common-build-arch::
+	$(MAKE) -s defconfig
+	$(MAKE) -s build-host
+
+common-install-arch:: install-host install-images
+install-host:
+	$(MAKE) -s defconfig
+	$(MAKE) -s $(install-opt) install-host
+	mv $(install-prefix)/bin/hermit $(install-prefix)/bin/hermit-$(VMAJOR)
+	sed -e 's/@VVER@/$(VMAJOR)/g' -e 's/@VPRI@/$(VPRI)/g' \
+		debian/hermit-at.postinst.in > debian/hermit-at-$(VMAJOR).postinst
+	sed -e 's/@VVER@/$(VMAJOR)/g' \
+		debian/hermit-at.prerm.in > debian/hermit-at-$(VMAJOR).prerm
+
+
+install-images: $(images)
+	mv $(install-prefix)/lib/hermit $(install-prefix)/lib/hermit-$(VMAJOR)
+
+%_defconfig:
+	$(MAKE) -s scrub $@
+	$(MAKE) -s $(install-opt) install-target

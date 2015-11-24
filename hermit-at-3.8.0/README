@@ -1,0 +1,28 @@
+This is hermit-at, a fork of hermit[1] version 1.3.
+
+Hermit-At is a boot loader/downloader combination for embedded
+software development.  It inherits the ability to support multiple
+targets with a common infrastructure from the orignal hermit.  It
+currently supports the following boards:
+
+  - Armadillo series
+  - SUZAKU series
+
+Because Hermit-At is a derived work of Hermit 1.3, which is
+distributed under the GNU General Public License version 2, Hermit-At
+is also available under the same license.  Please see COPYING for more
+details.
+
+We, the maintainers of hermit-at, consider forks in the general open
+source community as not being the best solution.  We are happy to
+provide patch sets to merge this Hermit-At code base back to the
+original Hermit.
+
+You can download the latest version of Hermit-At at:
+
+    http://download.atmark-techno.com/
+
+We hope you will find this program useful. Happy Hacking!
+
+
+[1] http://www.bluemug.com/~miket/arm/

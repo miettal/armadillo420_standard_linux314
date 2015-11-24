@@ -1,0 +1,19 @@
+#
+# Automatically generated make config: don't edit
+# Thu May 17 18:52:18 2012
+#
+
+#
+# TARGET
+#
+# CONFIG_TARGET_BUILD is not set
+
+#
+# HOST
+#
+CONFIG_HOST_BUILD=y
+
+#
+# Host Configurations
+#
+CONFIG_HOST_FUNC_FIRMUPDATE=y

@@ -1,0 +1,24 @@
+#ifndef _HERMIT_A3X0_BOARD_H_
+#define _HERMIT_A3X0_BOARD_H_
+
+#include <autoconf.h>
+
+#define FLASH_START		(0x50000000)
+#define FLASH_SIZE		(0x00800000)
+
+#define FLASH_HERMIT_START	(0x50002000)
+
+#define DRAM_START		(0x00000000)
+#define DRAM_SIZE		(0x04000000)
+
+#if defined(CONFIG_SYSTEM_ENTRYPOINT_RAM)
+#define DRAM_HERMIT_START	(0x00010000)
+#else
+#define DRAM_HERMIT_START	(0x03000000)
+#endif
+#define DRAM_HERMIT_SIZE	(0x00f00000)
+
+#define STACK_START		(STACK_END + STACK_SIZE)
+#define STACK_END		(0x03f00000)
+#define STACK_SIZE		(0x00100000)
+#endif

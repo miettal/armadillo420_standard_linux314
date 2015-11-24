@@ -1,0 +1,33 @@
+#
+# Normal rules
+#
+.*
+*.o
+*.a
+*.d
+
+#
+# Generated files
+#
+!.gitignore
+HERMIT-VERSION-FILE
+profile-stamp
+target-stamp
+*.bin
+*.elf
+*.lds
+*.map
+*.srec
+src/host/common/hermit
+include/target/arch
+include/version.h
+include/target/version.h
+src/target/platform
+autoconf.h
+
+#
+# Temporary files
+#
+*.orig
+*~
+\#*#

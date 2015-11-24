@@ -1,0 +1,81 @@
+2001-03-30  Mike Touloumtzis  <miket@mayotte>
+
+	* Hermit version 1.3.
+
+	* New, cleaner Makefile system which supports a single
+	TARGET/PROFILE combination at a time.  The system will complain if
+	you don't properly clean the tree between different targets or
+	profiles.
+	
+	* EP7211: Added gzip-decompressed splash screen support based on a
+	splash screen patch from JonM.  Cleaned up the standard gunzip
+	code to support this.  Added a progress meter on the LCD which
+	tracks the progress of the kernel unzip (one bar for every gunzip
+	window flush; the window size is currently 32K).
+
+	* EP7211: Added a 'edb7211-kernel' profile for Hermit testing and
+	infrequently-used, one-off commands.  This profile runs from DRAM
+	like the boot mode profile, but doesn't expect a memory
+	remapping.  Download it to 0xc0028000, then start it from the
+	flash Hermit using the 'linux' command.
+	
+	* EP7211: N.B.: The 'linux' command now just boots the kernel
+	without unzipping it.  Use the 'unzip' command to unzip the
+	kernel first.
+
+2001-03-14  Mike Touloumtzis  <miket@bluemug.com>
+
+	* Some contributions from Michael Kropfberger
+	<michael.kropfberger@liscon.com> and Gerhard Schaden
+	<ges@liscon.com>: addition of 16-bit peek and poke; added support
+	for devices without a keyboard.
+
+	* JonM has changed the default Linux root device to flash.  The
+	exact device is the ROM/flash card major (major 31), minor 17
+	(second flash bank).
+
+2001-03-14  Mike Touloumtzis  <miket@bluemug.com>
+
+	* Hermit version 1.2.
+
+	* EP7211: Switched serial UART from UART1 to UART2; initialize
+	both in startup code.  This frees up UART1 (which has modem
+	control lines) for other stuff, like running a serial mouse.
+
+2001-02-14  Mike Touloumtzis  <miket@bluemug.com>
+
+	* Hermit version 1.1.
+
+	* Fix a typo (words swapped) in the manpage; add some
+	documentation about how to pick an Ethernet address.
+	
+	* Use -M instead of -MM in dependency generation script to pick up
+	cases where we include files with <> instead of "".
+
+	* EP7211: Added support for gzipped kernel images (using the
+	gunzip code from the Linux kernel).  This replaces the old,
+	non-zipped kernel support, so you have to use compressed images
+	now.  The rationales are that:
+	- flash is expensive,
+	- downloads take time,
+	- decompression is fast,
+	- you can detect the end of a zipped image, and
+	- I want to keep the boot loader small and option-free.
+
+	* EP7211: Inclusion of 'life' is now optional, and disabled by
+	default (use LIFE=y).  The gunzip code is a little bloated, and I
+	was getting nervous that a crash was caused by a stack overflow
+	(turns out was just a bug).
+	
+	* EP7211: Update documentation to reflect the fact that kernels
+	should now be gzipped (Image.gz, not zImage).
+	
+	* EP7211: Run CPU at 74MHz.  This speeds up booting (especially
+	with decompression); it also seems to speed up Ethernet downloads.
+
+	* EP7211: Add a bunch of useful notes to the EP7211 documentation.
+
+2001-02-13  Mike Touloumtzis  <miket@bluemug.com>
+
+	* Initial Hermit release (version 1.0).
+

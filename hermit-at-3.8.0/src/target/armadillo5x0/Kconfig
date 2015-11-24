@@ -1,0 +1,54 @@
+#
+# src/target/armadillo5x0/Kconfig
+#
+
+if PLATFORM_ARMADILLO5X0
+
+choice
+	prompt "Base-board type"
+	default PLATFORM_ARMADILLO500_DEV
+
+config PLATFORM_ARMADILLO500_DEV
+	bool "Development Board"
+	select HAS_BASE_BOARD_ID
+	select CMD_BOOT
+
+config PLATFORM_ARMADILLO500_FX
+	bool "FX Board"
+	select CMD_BOOT
+
+config PLATFORM_ARMADILLO500_ZERO
+	bool "Any Board"
+
+endchoice
+
+config HAS_BASE_BOARD_ID
+	bool
+
+choice
+	prompt "Default CPU clock"
+	default PLATFORM_DEFCLOCK_IS_AUTODETECT
+
+config PLATFORM_DEFCLOCK_IS_AUTODETECT
+	bool "AutoDetect"
+
+config PLATFORM_DEFCLOCK_IS_400MHz
+	bool "400MHz"
+
+config PLATFORM_DEFCLOCK_IS_532MHZ
+	bool "532MHz"
+
+endchoice
+
+config PLATFORM_DEFCLOCK
+	string
+	default "auto" if PLATFORM_DEFCLOCK_IS_AUTODETECT
+	default "400" if PLATFORM_DEFCLOCK_IS_400MHz
+	default "532" if PLATFORM_DEFCLOCK_IS_532MHZ
+
+config ARMADILLO500_DEV_WORKAROUND_A500_ERRATUM_7
+       bool "workaround for a500 erratum #7"
+       depends on PLATFORM_ARMADILLO5X0
+       default y
+
+endif # PLATFORM_ARMADILLO5X0

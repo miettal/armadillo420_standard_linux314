@@ -1,0 +1,23 @@
+
+SREC_4M := $(shell $(srctree)/tools/ncvt -c "-" $(build_target_prefix) 4M).srec
+SREC_8M := $(shell $(srctree)/tools/ncvt -c "-" $(build_target_prefix) 8M).srec
+
+SREC_4M_VMA := $(if $(CONFIG_ARCH_MICROBLAZE),0xff080000,$(SREC_4M_VMA))
+SREC_8M_VMA := $(if $(CONFIG_ARCH_MICROBLAZE),0xff100000,$(SREC_8M_VMA))
+SREC_8M_VMA := $(if $(CONFIG_ARCH_PPC),0xf0100000,$(SREC_8M_VMA))
+
+ext-always-$(CONFIG_ARCH_MICROBLAZE)	+= $(SREC_4M) $(SREC_8M)
+ext-always-$(CONFIG_ARCH_PPC)		+= $(SREC_8M)
+always += $(ext-always-y)
+
+SREC_4M_FLAGS := -I binary -O srec --adjust-vma=$(SREC_4M_VMA)
+quiet_cmd_build_srec_4m ?= OBJCOPY $@
+      cmd_build_srec_4m ?= $(OBJCOPY) $(SREC_4M_FLAGS) $< $@
+$(obj)/$(SREC_4M): $(build_target).bin
+	$(call cmd,build_srec_4m,)
+
+SREC_8M_FLAGS := -I binary -O srec --adjust-vma=$(SREC_8M_VMA)
+quiet_cmd_build_srec_8m ?= OBJCOPY $@
+      cmd_build_srec_8m ?= $(OBJCOPY) $(SREC_8M_FLAGS) $< $@
+$(obj)/$(SREC_8M): $(build_target).bin
+	$(call cmd,build_srec_8m,)

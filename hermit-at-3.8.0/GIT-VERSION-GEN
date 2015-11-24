@@ -1,0 +1,40 @@
+#!/bin/sh
+
+HVF=HERMIT-VERSION-FILE
+DEF_VER=v3.8.0
+
+LF='
+'
+
+# First try git-describe, then default
+if VN=$(git describe --abbrev=4 HEAD 2>/dev/null) &&
+   case "$VN" in
+   *$LF*) (exit 1) ;;
+   v[0-9]*) : happy ;;
+   esac
+then
+	VN=$(echo "$VN" | sed -e 's/-/./g');
+else
+	VN="$DEF_VER"
+fi
+
+VN=$(expr "$VN" : v*'\(.*\)')
+
+dirty=$(sh -c 'git diff-index --name-only HEAD' 2>/dev/null) || dirty=
+case "$dirty" in
+'')
+	;;
+*)
+	VN="$VN-dirty" ;;
+esac
+
+if test -r $HVF
+then
+	VC=$(sed -e 's/^HERMIT_VERSION = //' <$HVF)
+else
+	VC=unset
+fi
+test "$VN" = "$VC" || {
+	echo >&2 "HERMIT_VERSION = $VN"
+	echo "HERMIT_VERSION = $VN" >$HVF
+}

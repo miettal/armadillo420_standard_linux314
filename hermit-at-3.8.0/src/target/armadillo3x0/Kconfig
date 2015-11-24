@@ -1,0 +1,7 @@
+#
+# src/target/armadillo3x0/Kconfig
+#
+
+if PLATFORM_ARMADILLO3X0
+
+endif # PLATFORM_ARMADILLO3X0

@@ -1,0 +1,34 @@
+wget http://armadillo.atmark-techno.com/files/downloads/armadillo-420/source/bootloader/hermit-at-3.8.0-source.tar.gz
+wget http://armadillo.atmark-techno.com/files/downloads/armadillo-420/source/kernel/linux-3.14-at4.tar.gz
+wget http://armadillo.atmark-techno.com/files/downloads/armadillo-420/source/dist/atmark-dist-20151026.tar.gz
+
+tar zxf hermit-at-3.8.0-source.tar.gz
+tar zxf linux-3.14-at4.tar.gz
+tar zxf atmark-dist-20151026.tar.gz
+
+ln -s hermit-at-3.8.0 hermit-at
+cd hermit-at
+make armadillo4x0_defconfig
+make
+ls src/target/armadillo4x0/*.bin
+cd ..
+
+ln -s atmark-dist-20151026 atmark-dist
+cd atmark-dist-20151026
+ln -s ../linux-3.14-at4 linux-3.x
+make menuconfig
+    Vendor/Product Selection --->
+        Vendor AtmarkTechno
+        AtmarkTechno Products Armadillo-420
+make
+ls images
+cd ..
+
+sudo cp hermit-at/src/target/armadillo4x0/loader-armadillo4x0-v3.8.0.bin /var/lib/tftpboot/
+sudo cp atmark-dist/images/linux.bin.gz /var/lib/tftpboot/
+sudo cp atmark-dist/images/linux.bin.gz /var/lib/tftpboot/
+sudo cp atmark-dist/images/romfs.img.gz /var/lib/tftpboot/
+
+picocom --baud=115200 /dev/ttyUSB0
+hermit> tftpdl 192.168.1.110 192.168.1.109 --bootloader=loader-armadillo4x0-v3.8.0.bin --kernel=linux.bin.gz --userland=romfs.img.gz
+

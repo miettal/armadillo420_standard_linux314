@@ -1,0 +1,17 @@
+Source: hermit-at-3
+Section: devel
+Maintainer: Masahiro Nakai <nakai@atmark-techno.com>
+Priority: extra
+Standards-Version: 3.7.2
+Build-Depends: cdbs, debhelper (>= 5)
+
+Package: hermit-at-3
+Architecture: any
+Conflicts: hermit, hermit-at
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Replaces: hermit-at-3.2 (<=3.4.0), hermit-at-3.3(<=3.4.0)
+Breaks: hermit-at-3.2 (<=3.4.0), hermit-at-3.3(<=3.4.0)
+Suggests: shoehorn
+Description: Yet Another Hermit boot loader/downloader
+ Hermit-At is a fork of Hermit, a boot loader/downloader
+ combination. Hermit-At supports all Atmark Techno products line.

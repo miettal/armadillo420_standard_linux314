@@ -1,0 +1,21 @@
+#
+# src/target/suzaku/Kconfig
+#
+
+if PLATFORM_SUZAKU
+
+choice
+	prompt "Board type"
+	default PLATFORM_SUZAKU_S
+
+config PLATFORM_SUZAKU_S
+	bool "SUZAKU-S"
+	select ARCH_MICROBLAZE
+
+config PLATFORM_SUZAKU_V
+	bool "SUZAKU-V"
+	select ARCH_PPC
+
+endchoice
+
+endif

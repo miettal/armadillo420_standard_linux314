@@ -1,0 +1,305 @@
+#
+# src/target/driver/Kconfig
+#
+
+menu "Support Devices"
+
+#
+# Console
+#
+choice
+	prompt "Console"
+	default CONSOLE_TTYAM0 if (CPU_EP93XX || CPU_NS9750)
+	default CONSOLE_TTYMXC0 if CPU_IMX31
+	default CONSOLE_TTYMXC1 if PLATFORM_ARMADILLO4X0 || PLATFORM_ARMADILLO_IOTG_STD
+	default CONSOLE_TTYSC1 if PLATFORM_ARMADILLO800EVA
+	default CONSOLE_TTYSC2 if (PLATFORM_ARMADILLO810 || PLATFORM_ARMADILLO840)
+	default CONSOLE_TTYS0 if PLATFORM_SUZAKU
+
+config CONSOLE_TTYAM0
+	bool "ttyAM0"
+	depends on CPU_EP93XX || CPU_NS9750
+config CONSOLE_TTYAM1
+	bool "ttyAM1"
+	depends on CPU_EP93XX || CPU_NS9750
+config CONSOLE_TTYAM2
+	bool "ttyAM2"
+	depends on CPU_EP93XX
+config CONSOLE_TTYMXC0
+	bool "ttymxc0"
+	depends on (CPU_IMX31 || (CPU_IMX25 && PLATFORM_ARMADILLO_IOTG_STD))
+config CONSOLE_TTYMXC1
+	bool "ttymxc1"
+	depends on (CPU_IMX25 && (PLATFORM_ARMADILLO4X0 || PLATFORM_ARMADILLO_IOTG_STD)) || CPU_IMX31
+config CONSOLE_TTYMXC2
+	bool "ttymxc2"
+	depends on (CPU_IMX25 && PLATFORM_ARMADILLO4X0 && ! MACHINE_ARMADILLO_BOX_WS1)
+config CONSOLE_TTYMXC3
+	bool "ttymxc3"
+	depends on (CPU_IMX25 && ((PLATFORM_ARMADILLO4X0 && ! MACHINE_ARMADILLO_BOX_WS1) || PLATFORM_ARMADILLO_IOTG_STD))
+config CONSOLE_TTYMXC4
+	bool "ttymxc4"
+	depends on (CPU_IMX25 && ((PLATFORM_ARMADILLO4X0 && ! MACHINE_ARMADILLO_BOX_WS1) || PLATFORM_ARMADILLO_IOTG_STD)) || (CPU_IMX31 && PLATFORM_ARMADILLO500_FX)
+config CONSOLE_TTYS0
+	bool "ttyS0"
+	depends on PLATFORM_SUZAKU
+config CONSOLE_TTYSC1
+	bool "ttySC1"
+	depends on PLATFORM_ARMADILLO800EVA
+config CONSOLE_TTYSC2
+	bool "ttySC2"
+	depends on (PLATFORM_ARMADILLO810 || PLATFORM_ARMADILLO840)
+
+config CONSOLE_NONE
+	bool "none"
+
+endchoice
+
+config DEFAULT_CONSOLE
+	string
+	default "ttyAM0" if CONSOLE_TTYAM0
+	default "ttyAM1" if CONSOLE_TTYAM1
+	default "ttyAM2" if CONSOLE_TTYAM2
+	default "ttymxc0" if CONSOLE_TTYMXC0
+	default "ttymxc1" if CONSOLE_TTYMXC1
+	default "ttymxc2" if CONSOLE_TTYMXC2
+	default "ttymxc3" if CONSOLE_TTYMXC3
+	default "ttymxc4" if CONSOLE_TTYMXC4
+	default "ttyS0" if CONSOLE_TTYS0
+	default "ttySC1" if CONSOLE_TTYSC1
+	default "ttySC2" if CONSOLE_TTYSC2
+	default "none" if CONSOLE_NONE
+
+config STANDARD_CONSOLE
+	string
+	default "ttyAM0" if (CPU_EP93XX || CPU_NS9750)
+	default "ttymxc0" if CPU_IMX31
+	default "ttymxc1" if (CPU_IMX25 && (PLATFORM_ARMADILLO4X0 || PLATFORM_ARMADILLO_IOTG_STD))
+	default "ttyS0" if PLATFORM_SUZAKU
+	default "ttySC1" if PLATFORM_ARMADILLO800EVA
+	default "ttySC2" if (PLATFORM_ARMADILLO810 || PLATFORM_ARMADILLO840)
+
+config TTYMXC1_DTR_DSR_DCD_RI_MX25
+	bool "Support for ttymxc1 DTR/DSR/DCD/RI"
+	depends on CONSOLE_TTYMXC1 && PLATFORM_ARMADILLO4X0
+
+#
+# Flash Memory
+#
+config FLASH
+	bool "Flash memory support"
+	depends on HAS_FLASH
+
+config FLASH_AMD
+	bool "Support for AMD/Fujitsu chips"
+	depends on FLASH
+
+config FLASH_INTEL
+	bool "Support for Intel/Sharp chips"
+	depends on FLASH
+
+config FLASH_SPI
+	bool "Support for SPI chips"
+	depends on FLASH
+
+choice
+	prompt "Device"
+	depends on FLASH_SPI
+	default FLASH_SPI_M25P64
+
+config FLASH_SPI_M25P64
+	bool "M25P64"
+
+endchoice
+
+#
+# Ethernet
+#
+config ETHERNET
+	bool "Ethernet support"
+	depends on HAS_ETHERNET
+	select NET_CORE
+
+config ETHERNET_DEBUG
+	bool "Debugging Ethernet"
+	depends on ETHERNET && SYSTEM_DEBUGGING
+
+config ETHERNET_EP93XX
+	bool "Support for EP93xx Ethernet Controller"
+	depends on ETHERNET && CPU_EP93XX
+	select I2C_EP93XX_GPIO
+
+config ETHERNET_MX25_FEC
+	bool "Support for i.MX25 Fast Ethernet Controller (FEC)"
+	depends on ETHERNET && (PLATFORM_ARMADILLO4X0 || PLATFORM_ARMADILLO_IOTG_STD)
+	select I2C_MX25
+
+config ETHERNET_NS9750
+	bool "Support for NS9750 Ethernet Controller"
+	depends on ETHERNET && CPU_NS9750
+	select I2C_NS9750
+
+config ETHERNET_SMSC911X
+	bool "Support for SMSC LAN911X Ethernet Controller"
+	depends on ETHERNET && PLATFORM_ARMADILLO5X0
+
+config ETHERNET_RMA1
+	bool "Support for R-Mobile A1 Ethernet Controller"
+	depends on ETHERNET && PLATFORM_ARMADILLO8X0
+	select I2C_RMA1
+
+config NET_CORE
+	bool
+config NET_UDP
+	bool
+config NET_UDP_TFTP
+	bool
+	select NET_UDP
+config NET_TCP
+	bool
+config NET_TCP_HTTP
+	bool
+	select NET_TCP
+
+#
+# I2C
+#
+config I2C_EP93XX_GPIO
+	bool
+
+config I2C_MX25
+	bool
+
+config I2C_NS9750
+	bool
+
+config I2C_RMA1
+	bool
+
+config I2C_MX25_GPIO
+	bool
+
+#
+# MMC/SD
+#
+config MMCSD
+	bool "MMC/SD support"
+	depends on HAS_MMCSD
+	select GENDISK
+
+config MMCSD_DEBUG
+	bool "Debugging MMC/SD"
+	depends on MMCSD && SYSTEM_DEBUGGING
+
+config MMCSD_MX25_ESDHC
+	bool "Support for i.MX25 Secured Digital Host Controller (eSDHC)"
+	depends on MMCSD && CPU_IMX25
+
+config MMCSD_MX25_ESDHC2
+	bool "Support for i.MX25 Secured Digital Host Controller 2 (eSDHC2)"
+	depends on MMCSD && CPU_IMX25 && MMCSD_MX25_ESDHC
+
+config MMCSD_MX31_SDHC
+	bool "Support for i.MX31 Secured Digital Host Controller (SDHC)"
+	depends on MMCSD && CPU_IMX31
+
+config MMCSD_RMA1_MMC
+	bool "Support for RMA1 Multi Media Card Interface (MMCIF)"
+	depends on MMCSD && CPU_RMA1
+	select MMCSD_RMA1_CORE
+
+config MMCSD_RMA1_SDHC
+	bool "Support for RMA1 Secured Digital Host Interface (SDHI)"
+	depends on MMCSD && CPU_RMA1
+	select MMCSD_RMA1_CORE
+
+config MMCSD_RMA1_CORE
+	bool
+	depends on MMCSD && CPU_RMA1
+
+#
+# Compact Flash
+#
+config COMPACTFLASH
+	bool "Compact Flash support"
+	depends on HAS_COMPACTFLASH
+	select IDE_CORE
+
+config COMPACTFLASH_DEBUG
+	bool "Debugging Compact Flash"
+	depends on COMPACTFLASH && SYSTEM_DEBUGGING
+
+config COMPACTFLASH_EP93XX
+	bool "Support for EP93xx Compact Flash & IDE"
+	depends on COMPACTFLASH && PLATFORM_ARMADILLO9
+	select PCMCIA_CORE
+
+config COMPACTFLASH_A3X0
+	bool "Support for Armadillo-3x0 Compact Flash"
+	depends on COMPACTFLASH && PLATFORM_ARMADILLO3X0
+
+config COMPACTFLASH_MX31
+	bool "Support for i.MX31 Comapct Flash"
+	depends on COMPACTFLASH && PLATFORM_ARMADILLO5X0
+	select PCMCIA_CORE
+
+config PCMCIA_CORE
+	bool
+config IDE_CORE
+	bool
+	select GENDISK
+config GENDISK
+	bool
+	select FS_EXT2
+
+#
+# File System
+#
+config FS_EXT2
+	bool
+
+config FS_SQUASH
+	bool
+
+#
+# Watchdog Timer
+#
+config WDT
+	bool "Watchdog support"
+        depends on HAS_WDT
+
+config WDT_MX25
+	bool "Support for i.MX25 Watchdog Timer (WDOG)"
+	depends on WDT && (PLATFORM_ARMADILLO4X0 || PLATFORM_ARMADILLO_IOTG_STD)
+	select IRQ_MX25
+
+config WDT_RMA1
+	bool "Support for RMA1 Watchdog Timer (RWDT)"
+	depends on WDT && PLATFORM_ARMADILLO8X0
+	select IRQ_RMA1
+
+config IRQ
+	bool
+config IRQ_MX25
+	bool
+	select IRQ
+config IRQ_RMA1
+	bool
+	select IRQ
+
+#
+# CryptoMemory
+#
+config EEPROM_AT88SC
+	bool "Support for Atmel AT88SC (CryptoMemory)"
+        depends on (PLATFORM_ARMADILLO810 || PLATFORM_ARMADILLO840)
+
+#
+# GPIO Expander
+#
+config GPIO_PCA9538
+	bool "Support for NXP PCA9538A"
+	depends on PLATFORM_ARMADILLO_IOTG_STD
+	select I2C_MX25_GPIO
+
+endmenu

@@ -1,0 +1,169 @@
+#include "board.h"
+#include <init.h>
+
+ENTRY(_start_flash)
+
+MEMORY
+{
+	FLASH	: ORIGIN = FLASH_START, LENGTH = FLASH_SIZE
+	DRAM	: ORIGIN = DRAM_HERMIT_START, LENGTH = DRAM_HERMIT_SIZE
+}
+
+SECTIONS
+{
+	. = FLASH_START;
+
+	/* boot code: not relocated */
+	.boot BLOCK(32):
+	{
+		*(.flash.boot)
+		*(.pre.init)
+		*(.pre.init.*)
+		*(.pre.entry)
+	} >FLASH
+
+	__entry_start_src = .;
+	. = DRAM_HERMIT_START;
+
+	.entry BLOCK(32): AT(__entry_start_src)
+	{
+		__entry_start = ABSOLUTE(.);
+		*(.post.entry)
+		__entry_end = ABSOLUTE(.);
+	} >DRAM = 0
+
+	__text_start_src = LOADADDR(.entry) + SIZEOF(.entry);
+	.text BLOCK(32): AT(__text_start_src)
+	{
+		__text_start = ABSOLUTE(.);
+
+		*(.ram.boot)		/* must come first */
+		*(.hermit.version)
+
+		__vector_start = ABSOLUTE(.);
+		*(.vector)
+		__vector_end = ABSOLUTE(.);
+		*(.vector.handler)
+
+		INIT_CALLS
+
+		__command_list_start = .;
+		*(.command.list)
+		__command_list_end = .;
+		LONG(0)			/* insert NULL */
+
+		__command_abbrev_start = .;
+		*(.command.abbrev)
+		__command_abbrev_end = .;
+		LONG(0)			/* insert NULL*/
+
+		*(.text)		/* program text (code) */
+		*(.text.*)		/* annotated text sections */
+		*(.stub)
+		*(.gnu.warning)
+		*(.gnu.linkonce.t*)
+		*(.glue_7t)
+		*(.glue_7)
+		*(.rodata)		/* read-only data */
+		*(.rodata.*)		/* read-only data */
+		*(.gnu.linkonce.r*)
+		*(.rodata1)		/* read-only data */
+		*(.sdata2)
+
+		*(.eh_frame)
+		*(.gcc_except_table)
+		*(.got)			/* global offset table */
+		*(.dynamic)
+
+		*(.sdata)
+		*(.sdata.*)
+		*(.gnu.linkonce.s.*)
+
+		*(.got.plt)
+
+		__text_end = ABSOLUTE(.);
+	} >DRAM =0
+
+	/* .data: initialized data (must be relocated to RAM) */
+	__data_start_src = LOADADDR(.text) + SIZEOF(.text);
+	.data BLOCK(32): AT(__data_start_src)
+	{
+		__data_start = ABSOLUTE(.);
+		*(.data)		/* initialized writeable data */
+		*(.data.*)		/* initialized writeable data */
+		*(.gnu.linkonce.d*)
+		*(.data1)
+		__data_end = ABSOLUTE(.);
+	} >DRAM =0
+
+	/* .bss: uninitialized data (must be zeroed) */
+	.bss BLOCK(32):
+	{
+		__bss_start = ABSOLUTE(.);
+		*(.sbss)
+		*(.dynsbss)
+		*(.sbss.*)
+		*(.sbss2)
+		*(.scommon)
+		*(.bss)			/* uninitialized data (zeroed) */
+		*(.dynbss)
+		*(.bss.*)		/* uninitialized data (zeroed) */
+		*(COMMON)
+		__bss_end = ABSOLUTE(.);
+	} >DRAM
+
+	/* .unused: stuff we don't want in the loader */
+	.unused 0:
+	{
+		*(.ctors)		/* constructors */
+		*(.dtors)		/* destructors */
+		*(.init)		/* initialization code */
+		*(.fini)		/* termination code */
+		*(.note.ABI-tag)
+
+		*(.interp)		/* path name of program interpreter */
+		*(.hash)		/* symbol hash table */
+		*(.dynsym)		/* dynamic linking symbol table */
+		*(.dynstr)
+		*(.gnu.version)
+		*(.gnu.version_d)
+		*(.gnu.version_r)
+		*(.plt)			/* procedure linkage table */
+
+		*(.rel.init)		/* relocation information... */
+		*(.rela.init)
+		*(.rel.text)
+		*(.rela.text)
+		*(.rel.fini)
+		*(.rela.fini)
+		*(.rel.rodata)
+		*(.rela.rodata)
+		*(.rel.data)
+		*(.rela.data)
+		*(.rel.ctors)
+		*(.rela.ctors)
+		*(.rel.dtors)
+		*(.rela.dtors)
+		*(.rel.got)
+		*(.rela.got)
+		*(.rel.sdata)
+		*(.rela.sdata)
+		*(.rel.sbss)
+		*(.rela.sbss)
+		*(.rel.sdata2)
+		*(.rela.sdata2)
+		*(.rel.sbss2)
+		*(.rela.sbss2)
+		*(.rel.bss)
+		*(.rela.bss)
+		*(.rel.plt)
+		*(.rela.plt)
+
+		*(.stab)		/* symbol table (debugging)... */
+		*(.stabstr)
+		*(.stab.excl)
+		*(.stab.exclstr)
+		*(.stab.index)
+		*(.stab.indexstr)
+	}
+}

@@ -1,0 +1,42 @@
+#!/bin/sh
+
+CHAR="/"
+OUTPUT=""
+STRINGS=""
+
+COUNT=$#
+
+while [ $COUNT -gt 0 ]
+do
+	COUNT=$((COUNT-1))
+
+	if [ "" = "$1" ]; then
+		shift
+		continue
+	fi
+	if [ "-c" = "$1" ]; then
+		shift
+		if [ "" = "$1" ]; then
+			exit -1
+		fi
+		CHAR="$1"
+
+		COUNT=$((COUNT-1))
+		shift
+		continue
+	fi
+	STRINGS=`echo "$STRINGS" "$1"`	
+	shift
+done
+
+for str in $STRINGS
+do
+	if [ "" = "$OUTPUT" ]; then
+		OUTPUT=`echo "$str"`
+	else
+		OUTPUT=`echo "$OUTPUT""$CHAR""$str"`
+	fi
+done
+
+echo "$OUTPUT"
+

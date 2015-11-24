@@ -1,0 +1,321 @@
+Installing Hermit and Linux on the EP7211
+=========================================
+
+This document covers installing a flash loader and Linux kernel image
+on a bare EDB7211 evaluation board.  At the end of this process, the
+board can boot a Linux kernel under its own power.
+
+Hermit currently supports only the EDB7211 hardware implementation of
+the EP7211 processor (the EDB7211 is the Cirrus Logic evaluation board
+for the EP7211).  No other hardware configuration is yet handled either
+by Hermit or by this document.
+
+Quick Reference
+---------------
+
+-- Jumper board to boot, with null modem cable to UART1.
+-- Install bootstrapping Hermit in RAM:
+	$ shoehorn --edb7211 --terminal --initrd=/etc/motd \
+		--kernel=loader-edb7211-boot.bin
+-- Move serial cable to UART2.
+-- Install Hermit in flash:
+	$ hermit download --input-file loader-edb7211.bin \
+		--region flash-1 --force-locked
+-- Remove boot mode jumper with power toggle off.
+-- Attach crossover Ethernet cable or regular cable + hub between PC and
+   Ethernet jack on EDB7211.
+-- Hit WAKEUP while holding a key to enter Hermit prompt.
+-- Download a gzipped Linux image (Image.gz):
+	$ hermit --ethernet --remote-mac 00:11:22:33:44:55 \
+		download --input-file Image.gz --address 0x10000 
+
+Now for the more detailed instructions:
+
+0. Prerequisites
+----------------
+
+To bootstrap an EDB7211, you'll need:
+
+-- A workstation running Linux.
+
+-- A gcc toolchain that can build ARM binaries, installed as
+   arm-linux-* (arm-linux-gcc, arm-linux-ld, etc).
+
+-- The `shoehorn' bootstrap loader for EP7211.  This is a separate
+   software package, distinct from Hermit.
+
+-- A null-modem cable connected between some serial port /dev/ttyS* on
+   your workstation and UART1 on the EDB7211.  If you're using a serial
+   port other than ttyS0, such as ttyS1, you'll have to add e.g.
+   `--port=/dev/ttyS1' to both shoehorn and hermit command lines
+   throughout this document.  For hermit, you can also select a port
+   using an environment variable:
+
+   $ HERMIT_PORT=/dev/ttyS1
+   $ export HERMIT_PORT
+
+-- The source code for Hermit; for this bootstrapping process, you'll
+   need to build a version of Hermit that is not normally installed.
+
+-- Optionally, an installed copy of Hermit (installing the Debian
+   package is a good idea if you're using Debian).  Some of the steps
+   below assume the `hermit' host-side binary appears in your path.
+
+-- A Linux kernel Image file, if you want to install Linux.
+
+-- Optionally, a crossover Ethernet cable (or two standard cables and a
+   hub) between a spare workstation NIC and the RJ-45 (Ethernet) jack
+   on the EDB7211.  Ethernet downloads are much faster than serial ones.
+
+   To use Ethernet download, you'll need hermit installed suid root on
+   the machine from which you'll be downloading.  The Debian package
+   for hermit installs it suid root.  This is needed because Ethernet
+   downloads use raw (packet) sockets to talk to the Ethernet interface
+   without TCP/IP.
+
+1: Getting Hermit into RAM
+--------------------------
+
+The first step is to use the 'shoehorn' loader to get a specially linked
+version of Hermit into RAM.  This version has no relocation code, runs from
+the same address in DRAM (0xc0028000) as the Linux kernel, and expects a
+'boot mode' configuration of the EP7211.  The ordinary version of the
+Hermit loader, in contrast, is linked to run from flash; however, shoehorn
+can only download to RAM, and in boot mode the EDB7211 address range
+normally occupied by flash is instead occupied by an on-chip boot ROM.
+
+Shoehorn only works with the EDB7211 in boot mode.  It uses the on-chip
+boot ROM to get a small, non-flash-capable loader into the on-chip
+SRAM, and uses that small loader to download bigger things to DRAM.
+The bigger thing we will download here is the Hermit loader, which can
+in turn program another loader into flash.  Kind of involved, but you
+only have to do it once, unless you screw up your flash :-).
+
+Shoehorn uses UART1 on the EDB7211 (which corresponds to the right-hand
+serial port, beneath the LCD).  Hermit versions 1.2 and later use UART2.
+This just means that between running shoehorn and running hermit, you'll
+have to swap the serial cable from one EDB7211 port to the other.
+
+Steps:
+
+a. Make sure the EDB7211 is jumpered for boot mode.  Jumper JP2 (which is
+   labeled "BOOT ENABLE" and which is just above the upper left corner of
+   the keyboard) should be shorted (on).  The evaluation board should
+   be off (toggle power switch on the right) when you move this jumper;
+   just hitting RESET isn't enough.
+
+b. Find or build the boot mode loader.  If you have installed the Debian
+   package for Hermit version 1.3 or later, the file should be present as
+   '/usr/lib/hermit/loader-edb7211-boot.bin'.  If you don't have the Hermit
+   package installed, here's how to build it (this will also build the
+   downloader, in case you don't have it installed already; the steps below
+   assume you do).
+
+   $ HERMIT=path/to/hermit/source	# just for notational convenience
+   $ cd $HERMIT
+   $ make TARGET=ep7211 PROFILE=edb7211-boot
+
+   This will leave you with 'loader-edb7211-boot.bin' in
+   $HERMIT/src/target/ep7211/.
+
+c. Download this 'boot mode' Hermit loader using shoehorn, along with any
+   small file as the initrd (hermit does not use the initial ramdisk).
+
+     ** turn on main EDB7211 board power switch, but don't hit WAKEUP **
+     ** make sure serial cable is connected to UART1 **
+   $ LOADER=path/to/file/from/step/b
+   $ shoehorn --edb7211 --terminal --initrd=/etc/motd --kernel=$LOADER
+     ** hit WAKEUP (under keyboard on the left) when prompted **
+
+   The above command does a serial download (which is acceptably fast;
+   the hermit loader is small).  You may want to try again with the
+   --ethernet option (and with --netif=<interface> for an interface
+   other than eth0) to make sure ethernet downloads work.
+
+   Once shoehorn has downloaded Hermit, shoehorn will enter terminal
+   mode.  For Hermit version 1.2 and later, swap the serial cable to
+   UART2, and you'll see the Hermit prompt; the green LED underneath
+   the keyboard will also come on.  Hit <enter> a few times to make
+   sure Hermit is responding.  Then hit ^C to get out of terminal mode;
+   Hermit is still running on the eval board.
+
+2: Getting Hermit into Flash-ROM
+--------------------------------
+
+Now we need to use the copy of Hermit that's running in DRAM to download
+the normal (non-bootmode) version of Hermit to flash.  Make sure you
+don't hit RESET between the last step and this one, or you'll have to
+repeat the earlier steps.
+
+d. Locate the non-boot-mode hermit loader.  If you have installed the
+   Debian package, this loader should be installed as
+   /usr/lib/hermit/loader-edb7211.bin:
+
+   $ LOADER=/usr/lib/hermit/loader-edb7211.bin
+
+   If the Debian package is not installed, you'll need to rebuild hermit
+   without the BOOTMODE option:
+
+   $ cd $HERMIT
+   $ make scrub
+   $ make TARGET=ep7211
+   $ LOADER=$HERMIT/src/target/ep7211/loader-edb7211.bin
+
+e. Download the loader to the first flash bank:
+
+     ** make sure serial cable is connected to UART2 **
+   $ hermit download --force-locked --input-file $LOADER --region flash-1
+
+   Most common Hermit options have single-letter variants; just type
+   `hermit' for a quick summary, or read the hermit manual page.
+
+   The `--force-locked' option is needed because the boot loader lives in
+   one of the Flash-ROM "boot blocks", which are marked as locked in the
+   memory map.  In fact, although the flash supports hardware locking of
+   these blocks, the EDB7211 hardware leaves them permanently unlocked;
+   in order to write them, you don't have to do anything but tell hermit
+   not to worry about the locking.
+
+   If you run into problems with Hermit, the `--verbose' option might
+   help out.
+
+f. Re-jumper the board: turn the power off, remove JP2, restore power.
+   This switches from boot mode (boot from internal ROM) to standard mode
+   (boot from external memory at address 0, which in this case is the
+   first flash bank).
+
+g. Run Hermit in terminal mode so that you can see the output of the next
+   step:
+
+   $ hermit terminal
+
+h. Hit the WAKEUP button while holding down a key on the EDB7211 keyboard
+   (one of the shift keys is a good choice).  This will activate the
+   Hermit command line (instead of branching to never-never land if the
+   rest of your flash is empty).  You should see the Hermit prompt on
+   the terminal; again, the LED will come on.
+
+3: Installing the Linux kernel
+------------------------------
+
+i. You can now download a Linux kernel Image using the version of Hermit
+   in flash.  First, hit ^C to end terminal mode (if you're still at the
+   Hermit command prompt).  Obtain a kernel Image file ("make Image") and
+   gzip it:
+
+   $ gzip Image
+
+   Note that a gzipped Image file ("Image.gz"), which hermit can load,
+   is not the same as a zImage file, which hermit can't load.  The latter
+   includes some stub code at the beginning to unzip itself after being
+   loaded into RAM; the former is just a gzipped kernel binary, allowing
+   hermit to do the unzipping as it loads the kernel into RAM.
+
+   Download the zipped Image file to address 0x10000:
+
+   $ hermit --ethernet download --input-file Image.gz --address 0x10000
+
+   You can do without the --ethernet option at any time.  A full kernel
+   download will take much longer without using Ethernet download, though.
+   See the Notes section below if Hermit complains that your MAC address
+   is invalid.
+
+   If you're using an Ethernet interface other than eth0, pass
+   `--netif=<interface>' on the command line, or set the HERMIT_NETIF
+   environment variable:
+
+   $ HERMIT_NETIF=eth1
+   $ export HERMIT_NETIF
+
+j. Start Linux.  You can either run 'hermit terminal' and type 'unzip'
+   followed by 'linux' at the Hermit command prompt, or just hit RESET and
+   WAKEUP without touching the keyboard.
+
+   At this point, the kernel will complete its boot process, but will
+   panic without a root filesystem (it's still useful to confirm that the
+   kernel is working, however).  Installing a filesystem, and configuring
+   the kernel to use it, is outside the scope of this document.
+
+4: Notes
+--------
+
+This section contains miscellaneous notes on the Hermit boot loader
+implementation for EP7211.
+
+-- Hermit only support polling (not interrupt-driven) I/O.  The LED on
+   the EDB7211 indicates whether Hermit is currently polling the serial
+   line (solid on), or the Ethernet interface (blinking).
+
+-- The serial EEPROM connected to the EDB7211's Ethernet chipset doesn't
+   come with a MAC address programmed into it.  If this is the case,
+   Hermit will complain that your MAC address is FF:FF:FF:FF:FF:FF, and
+   will refuse to download.
+
+   To fix this, make up an Ethernet address and program the target with
+   the --remote-mac option.  This setting will persist until the chip
+   is fully powered off (it will survive a RESET/WAKEUP, but not a
+   toggle of the power switch).  See the manual page for some hints
+   about MAC selection.
+
+-- The loader relocates itself from flash to on-chip SRAM at boot time.
+   All of its working memory, including flash program buffer and stack,
+   are located in SRAM, as is its program text.  Exceptions are:
+
+   -- Loading the kernel touches a contiguous area of DRAM starting at
+      the kernel text start address (TEXTADDR in the kernel source);
+      it also biffs part of the video memory area, since it used it as
+      scratch memory for unzipping the kernel.
+
+   -- The splash screen obviously touches video memory.
+
+   -- The game of Life touches the video memory, but that probably won't
+      be used for production systems :-).
+
+   There are two implications to Hermit relocation:
+
+   -- It's possible to reboot, and even to use the Hermit command line,
+      without scribbling on DRAM contents outside of video memory.  This is
+      useful if you want to use some DRAM to contain a persistent
+      filesystem.
+
+   -- You can use Hermit to reprogram its own image in flash.
+
+-- Hermit's memory mapping support can handle 'load addresses' which are
+   different from 'virtual addresses' (this is the same distinction used by
+   the GNU binutils).  Virtual addresses are used on the host-side command
+   line with options like 'address'.  Load addresses are the current
+   physical addresses.
+
+   This allows Hermit to easily support the EP7211's ROM boot mode.
+   If you're using an ordinary version of Hermit, it will, for example,
+   report the on-chip SRAM bank as the following (try the 'memmap'
+   command on the target command line to see this):
+
+	60000000:600095ff RAM onchip-sram
+
+   The first part contains the addresses of the first and last byte of the
+   region.  In contrast, if you're running a boot mode version of Hermit,
+   you'll see the following:
+
+	60000000:600095ff@10000000 RAM onchip-sram
+
+   The '@10000000' lets the host side know that the SRAM, which is
+   logically at 0x60000000, is currently mapped at 0x10000000.  The host
+   side performs all necessary translations; you use the same virtual
+   addresses on the command line (these are the addresses against which
+   the programs are actually linked, unless you're planning on running
+   them in boot mode) no matter whether you're running in boot mode
+   or not.
+
+-- In addition to the flash and bootmode loaders mentioned above, there is
+   a third build profile for the EDB7211, called 'kernel'.  To build it,
+   use 'make TARGET=ep7211 PROFILE=edb7211-kernel'.  This profile is
+   designed to run in normal (as opposed to boot mode), from DRAM, with the
+   same entry point as the Linux kernel.  A Hermit image using the
+   edb7211-kernel profile should be downloaded to address 0xc0028000 in
+   DRAM, and can be started using the 'linux' command from the Hermit
+   instance in flash.
+
+   This profile is useful for Hermit testing, as well as for additional
+   commands not important enough to put in the space-constrained flash
+   loader.

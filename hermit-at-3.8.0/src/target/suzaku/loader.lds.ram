@@ -1,0 +1,161 @@
+/*
+ * loader.lds -- hermit linker script
+ *
+ *  Copyright (C) 2004-2005  Atmark Techno, Inc.
+ *
+ * This file is subject to the terms and conditions of the GNU General
+ * Public License.  See the file COPYING in the main directory of this
+ * archive for more details.
+ *
+ * Written by Yasushi SHOJI <yashi@atmark-techno.com>
+ */
+
+#include "board.h"
+
+ENTRY(_start)
+
+MEMORY
+{
+	FLASH	: ORIGIN = FLASH_START, LENGTH = FLASH_SIZE
+	DRAM	: ORIGIN = DRAM_HERMIT_START,  LENGTH = DRAM_SIZE
+}
+
+SECTIONS
+{
+	. = DRAM_HERMIT_START ;
+
+	.text BLOCK(32):
+	{
+		__text_start = ABSOLUTE(.);
+
+		*(.boot)		/* must come first */
+		*(.hermit.version)
+		. = ALIGN(4);
+
+		__command_list_start = .;
+		*(.command.list)
+		__command_list_end = .;
+		LONG(0)                 /* insert NULL */
+
+		__command_abbrev_start = .;
+		*(.command.abbrev)
+		__command_abbrev_end = .;
+		LONG(0)                 /* insert NULL*/
+
+		*(.text)		/* program text (code) */
+		*(.text.*)		/* annotated text sections */
+		*(.stub)
+		*(.gnu.warning)
+		*(.gnu.linkonce.t*)
+		*(.glue_7t)
+		*(.glue_7)
+		*(.rodata)		/* read-only data */
+		*(.rodata.*)		/* read-only data */
+		*(.gnu.linkonce.r*)
+		*(.rodata1)		/* read-only data */
+		*(.sdata2)
+
+		*(.eh_frame)
+		*(.gcc_except_table)
+		*(.got)			/* global offset table */
+		*(.dynamic)
+
+		*(.sdata)
+		*(.sdata.*)
+		*(.gnu.linkonce.s.*)
+
+		*(.got.plt)
+
+		__text_end = ABSOLUTE(.);
+	} >DRAM =0
+
+	/* .data: initialized data */
+	.data BLOCK(32):
+	{
+		__data_start = ABSOLUTE(.);
+		*(.data)		/* initialized writeable data */
+		*(.data.*)		/* initialized writeable data */
+		*(.gnu.linkonce.d*)
+		*(.data1)
+		__data_end = ABSOLUTE(.);
+	} >DRAM =0
+
+	/* .bss: uninitialized data (must be zeroed) */
+	.bss BLOCK(32):
+	{
+		__bss_start = ABSOLUTE(.);
+		*(.sbss)
+		*(.dynsbss)
+		*(.sbss.*)
+		*(.sbss2)
+		*(.scommon)
+		*(.bss)			/* uninitialized data (zeroed) */
+		*(.dynbss)
+		*(.bss.*)		/* uninitialized data (zeroed) */
+		*(COMMON)
+		__bss_end = ABSOLUTE(.);
+	} >DRAM
+
+	/* .unused: stuff we don't want in the loader */
+	.unused 0:
+	{
+		*(.ctors)		/* constructors */
+		*(.dtors)		/* destructors */
+		*(.init)		/* initialization code */
+		*(.fini)		/* termination code */
+		*(.note.ABI-tag)
+
+		*(.interp)		/* path name of program interpreter */
+		*(.hash)		/* symbol hash table */
+		*(.dynsym)		/* dynamic linking symbol table */
+		*(.dynstr)
+		*(.gnu.version)
+		*(.gnu.version_d)
+		*(.gnu.version_r)
+		*(.plt)			/* procedure linkage table */
+
+		*(.rel.init)		/* relocation information... */
+		*(.rela.init)
+		*(.rel.text .rel.text.* .rel.gnu.linkonce.t.*)
+		*(.rela.text .rela.text.* .rela.gnu.linkonce.t.*)
+		*(.rel.fini)
+		*(.rela.fini)
+		*(.rel.rodata .rel.rodata.* .rel.gnu.linkonce.r.*)
+		*(.rela.rodata .rela.rodata.* .rela.gnu.linkonce.r.*)
+		*(.rel.data.rel.ro* .rel.gnu.linkonce.d.rel.ro.*)
+		*(.rel.data .rel.data.* .rel.gnu.linkonce.d.*)
+		*(.rela.data .rela.data.* .rela.gnu.linkonce.d.*)
+		*(.rel.tdata .rel.tdata.* .rel.gnu.linkonce.td.*)
+		*(.rela.tdata .rela.tdata.* .rela.gnu.linkonce.td.*)
+		*(.rel.tbss .rel.tbss.* .rel.gnu.linkonce.tb.*)
+		*(.rela.tbss .rela.tbss.* .rela.gnu.linkonce.tb.*)
+		*(.rel.ctors)
+		*(.rela.ctors)
+		*(.rel.dtors)
+		*(.rela.dtors)
+		*(.rel.got)
+		*(.rela.got)
+		*(.rela.got1)
+		*(.rela.got2)
+		*(.rel.sdata .rel.sdata.* .rel.gnu.linkonce.s.*)
+		*(.rela.sdata .rela.sdata.* .rela.gnu.linkonce.s.*)
+		*(.rel.sbss .rel.sbss.* .rel.gnu.linkonce.sb.*)
+		*(.rela.sbss .rela.sbss.* .rela.gnu.linkonce.sb.*)
+		*(.rel.sdata2 .rel.sdata2.* .rel.gnu.linkonce.s2.*)
+		*(.rela.sdata2 .rela.sdata2.* .rela.gnu.linkonce.s2.*)
+		*(.rel.sbss2 .rel.sbss2.* .rel.gnu.linkonce.sb2.*)
+		*(.rela.sbss2 .rela.sbss2.* .rela.gnu.linkonce.sb2.*)
+		*(.rel.bss .rel.bss.* .rel.gnu.linkonce.b.*)
+		*(.rela.bss .rela.bss.* .rela.gnu.linkonce.b.*)
+		*(.rel.plt)
+		*(.rela.plt)
+
+		*(.stab)		/* symbol table (debugging)... */
+		*(.stabstr)
+		*(.stab.excl)
+		*(.stab.exclstr)
+		*(.stab.index)
+		*(.stab.indexstr)
+	}
+}
+

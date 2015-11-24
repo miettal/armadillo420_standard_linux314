@@ -1,0 +1,12 @@
+
+The target-side Hermit boot loader requires a GCC toolchain for the
+target for which you are building (e.g. `arm-linux-gcc' and related
+tools).
+
+For now, there's no way of selecting a target to build, since there
+is only one target.  Just type 'make' in the Hermit root directory;
+this will build both host and target sides.
+
+'make install' installs Hermit to /usr/local, unless you override
+INSTALLPREFIX on the command line.
+

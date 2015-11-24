@@ -1,0 +1,253 @@
+#
+# src/target/Kconfig
+#
+
+comment "TARGET"
+
+config TARGET_BUILD
+	bool "build a bootloader image for your board"
+
+menu "Target System Type"
+	depends on TARGET_BUILD
+
+choice
+	prompt "Platform type"
+	default PLATFORM_ARMADILLO9
+
+config PLATFORM_ARMADILLO9
+	bool "Armadillo-9"
+	select CPU_EP93XX
+	select HAS_FLASH
+	select HAS_ETHERNET
+	select HAS_COMPACTFLASH
+
+config PLATFORM_ARMADILLO2X0
+	bool "Armadillo-2x0"
+	select CPU_EP93XX
+	select HAS_FLASH
+	select HAS_ETHERNET
+
+config PLATFORM_ARMADILLO3X0
+	bool "Armadillo-3x0"
+	select CPU_NS9750
+	select HAS_FLASH
+	select HAS_ETHERNET
+	select HAS_COMPACTFLASH
+
+config MACHINE_ARMADILLO4X0
+	bool "Armadillo-4x0"
+	select PLATFORM_ARMADILLO4X0
+	select CPU_IMX25
+	select HAS_FLASH
+	select HAS_ETHERNET
+	select HAS_MMCSD
+
+config MACHINE_ARMADILLO_BOX_WS1
+	bool "Armadillo-Box WS1"
+	select PLATFORM_ARMADILLO4X0
+	select CPU_IMX25
+	select HAS_FLASH
+	select HAS_ETHERNET
+	select HAS_MMCSD
+
+config PLATFORM_ARMADILLO_IOTG_STD
+	bool "Armadillo-IoT Gateway Standard"
+	select CPU_IMX25
+	select HAS_FLASH
+	select HAS_ETHERNET
+	select HAS_MMCSD
+	select GPIO_PCA9538
+
+config PLATFORM_ARMADILLO5X0
+	bool "Armadillo-5x0"
+	select CPU_IMX31
+	select HAS_FLASH
+	select HAS_ETHERNET
+	select HAS_COMPACTFLASH
+	select HAS_MMCSD
+	select ARMADILLO500_DEV_WORKAROUND_A500_ERRATUM_7
+
+config PLATFORM_ARMADILLO800EVA
+	bool "Armadillo-800 EVA"
+	select PLATFORM_ARMADILLO8X0
+	select CPU_RMA1
+	select HAS_FLASH
+	select HAS_ETHERNET
+	select HAS_MMCSD
+	select I2C_RMA1
+
+config PLATFORM_ARMADILLO810
+	bool "Armadillo-810"
+	select PLATFORM_ARMADILLO8X0
+	select CPU_RMA1
+	select HAS_FLASH
+	select HAS_MMCSD
+	select I2C_RMA1
+	select FS_SQUASH
+	select CROSSDEV_ARMHF
+
+config PLATFORM_ARMADILLO840
+	bool "Armadillo-840"
+	select PLATFORM_ARMADILLO8X0
+	select CPU_RMA1
+	select HAS_FLASH
+	select HAS_ETHERNET
+	select HAS_MMCSD
+	select I2C_RMA1
+	select FS_SQUASH
+	select CROSSDEV_ARMHF
+
+config PLATFORM_SUZAKU
+	bool "Suzaku"
+	select HAS_FLASH
+
+endchoice
+
+config PLATFORM_ARMADILLO4X0
+	bool
+config MACH_NAME
+	string
+	default "armadillo4x0" if MACHINE_ARMADILLO4X0
+	default "armadillo-box-ws1" if MACHINE_ARMADILLO_BOX_WS1
+
+config PLATFORM_ARMADILLO8X0
+	bool
+config MACH_NAME
+	string
+	default "armadillo800eva" if PLATFORM_ARMADILLO800EVA
+	default "armadillo810" if PLATFORM_ARMADILLO810
+	default "armadillo840" if PLATFORM_ARMADILLO840
+
+config PLATFORM_NAME
+	string
+	default "armadillo9" if PLATFORM_ARMADILLO9
+	default "armadillo2x0" if PLATFORM_ARMADILLO2X0
+	default "armadillo3x0" if PLATFORM_ARMADILLO3X0
+	default "armadillo-box-ws1" if MACHINE_ARMADILLO_BOX_WS1
+	default "armadillo4x0" if PLATFORM_ARMADILLO4X0
+	default "armadillo-iotg-std" if PLATFORM_ARMADILLO_IOTG_STD
+	default "armadillo5x0" if PLATFORM_ARMADILLO5X0
+	default "armadillo8x0" if PLATFORM_ARMADILLO8X0
+	default "suzaku" if PLATFORM_SUZAKU
+
+config PLATFORM_ARCH_NAME
+	string
+	default "ep93xx" if PLATFORM_ARMADILLO9 || PLATFORM_ARMADILLO2X0
+	default "ns9750" if PLATFORM_ARMADILLO3X0
+	default "mx25" if PLATFORM_ARMADILLO4X0 || PLATFORM_ARMADILLO_IOTG_STD
+	default "mx3" if PLATFORM_ARMADILLO5X0
+	default "rma1" if PLATFORM_ARMADILLO8X0
+	default "microblaze" if PLATFORM_SUZAKU_S
+	default "powerpc" if PLATFORM_SUZAKU_V
+
+source "src/target/armadillo9/Kconfig"
+source "src/target/armadillo2x0/Kconfig"
+source "src/target/armadillo3x0/Kconfig"
+source "src/target/armadillo4x0/Kconfig"
+source "src/target/armadillo-iotg-std/Kconfig"
+source "src/target/armadillo5x0/Kconfig"
+source "src/target/suzaku/Kconfig"
+
+config PROFILE_NAME
+	string "Profile name"
+	default ""
+
+config CPU_EP93XX
+	bool
+	select ARCH_ARM
+	select ARCH_ARM_920T
+	select HAS_MMU
+
+config CPU_NS9750
+	bool
+	select ARCH_ARM
+	select ARCH_ARM_926T
+	select HAS_MMU
+
+config CPU_IMX25
+	bool
+	select ARCH_ARM
+	select ARCH_ARM_926T
+	select HAS_MMU
+	select HAS_WDT
+
+config CPU_IMX31
+	bool
+	select ARCH_ARM
+	select ARCH_ARM_V6
+	select HAS_MMU
+
+config CPU_RMA1
+	bool
+	select ARCH_ARM
+	select ARCH_ARM_V7
+	select HAS_MMU
+	select HAS_WDT
+
+config ARCH_ARM
+	bool
+config ARCH_ARM_920T
+	bool
+	select ARCH_ARM_32v4T
+config ARCH_ARM_926T
+	bool
+	select ARCH_ARM_32v5
+config ARCH_ARM_V6
+	bool
+	select ARCH_ARM_32v6
+config ARCH_ARM_V7
+	bool
+	select ARCH_ARM_32v7
+config ARCH_ARM_32v4T
+       bool
+config ARCH_ARM_32v5
+       bool
+config ARCH_ARM_32v6
+       bool
+config ARCH_ARM_32v7
+       bool
+
+config ARCH_MICROBLAZE
+	bool
+	select HAS_CACHE
+
+config ARCH_PPC
+	bool
+	select HAS_CACHE
+
+config HAS_CACHE
+	bool
+config HAS_MMU
+	bool
+config HAS_WDT
+	bool
+config HAS_FLASH
+	bool
+config HAS_ETHERNET
+	bool
+config HAS_MMCSD
+	bool
+config HAS_COMPACTFLASH
+	bool
+
+config CROSSDEV_ARMHF
+	bool
+
+endmenu # Target settings #
+
+menu "Target Configurations"
+	depends on TARGET_BUILD
+
+#comment "General setup"
+
+config SYSTEM_EXPERIMENTAL
+	bool "prompt for experimental options"
+
+config SYSTEM_DEBUGGING
+	bool "prompt for debugging options"
+
+source "src/target/core/Kconfig"
+source "src/target/driver/Kconfig"
+source "src/target/command/Kconfig"
+
+endmenu

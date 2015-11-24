@@ -1,0 +1,81 @@
+#
+# src/target/core/Kconfig
+#
+
+menu "Core settings"
+
+choice
+	prompt "entry-point selection"
+	default SYSTEM_ENTRYPOINT_FLASH
+
+config SYSTEM_ENTRYPOINT_FLASH
+	bool "flash"
+	select SYSTEM_NEED_RELOCATE
+
+config SYSTEM_ENTRYPOINT_RAM
+	bool "ram"
+	depends on !CPU_RMA1
+
+config SYSTEM_ENTRYPOINT_SRAM
+	bool "sram"
+	select SYSTEM_NEED_RELOCATE
+	depends on CPU_RMA1
+
+endchoice
+
+config SYSTEM_LDSCRIPT
+	string
+	default "flash" if SYSTEM_ENTRYPOINT_FLASH
+	default "ram" if SYSTEM_ENTRYPOINT_RAM
+	default "sram" if SYSTEM_ENTRYPOINT_SRAM
+
+config SYSTEM_NEED_RELOCATE
+	bool
+
+choice
+	prompt "region to load image selection"
+
+config SYSTEM_BOOT_REGION_KERNEL
+	bool "kernel/userland"
+
+config SYSTEM_BOOT_REGION_IMAGE
+	bool "image"
+
+endchoice
+
+choice
+	prompt "\"mtdparts\" assign method"
+	default MTDPARTS_AUTO
+
+config MTDPARTS_FIXED
+	bool "fixed"
+
+config MTDPARTS_AUTO
+	bool "auto"
+
+endchoice
+
+config FIXED_MTDPARTS_STRINGS
+	string "default MTDPARTS"
+	depends on MTDPARTS_FIXED
+
+config AUTOBOOT
+	bool "Support for Autoboot"
+	default y
+	select CMD_BOOT
+
+config AUTOBOOT_CANCEL_BY_TACTSW
+	bool "Support for Autoboot cancel by Tact-SW"
+	depends on AUTOBOOT && (PLATFORM_ARMADILLO2X0 || PLATFORM_ARMADILLO4X0 || PLATFORM_ARMADILLO_IOTG_STD)
+	default n if PLATFORM_ARMADILLO2X0
+	default y if (PLATFORM_ARMADILLO4X0 || PLATFORM_ARMADILLO_IOTG_STD)
+
+config COMPATIBLE_MEDIA_BOOT
+	bool "Support for compatible media boot"
+	depends on (PLATFORM_ARMADILLO9 || PLATFORM_ARMADILLO3X0)
+
+config PASSWD_LOCK
+	bool "Support for password lock"
+	select CMD_PASSWD
+
+endmenu

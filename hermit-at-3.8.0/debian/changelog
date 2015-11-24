@@ -1,0 +1,452 @@
+hermit-at-3 (3.8.0) stable; urgency=low
+
+  * Add support for Armadillo-420
+
+  [ Makoto Harada]
+  * a4x0: change mtdparts
+  * abws1: bug fix of "Disable configuration of ttymxc2, 3 and 4"
+  * a4x0: disable FORCE_OFF of UART2 RS-232 Transceiver
+
+ -- Hiroaki OHSAWA <ohsawa@atmark-techno.com>  Fri, 16 Oct 2015 18:05:48 +0900
+
+hermit-at-3 (3.7.0) stable; urgency=low
+
+  * A840: ATAG_MEM presents DRAM size info except the ACM region
+
+ -- Hiroaki OHSAWA <ohsawa@atmark-techno.com>  Mon, 28 Sep 2015 15:56:42 +0900
+
+hermit-at-3 (3.6.0) stable; urgency=medium
+
+  * Add support for Armadillo-Box WS1
+
+ -- Yasushi SHOJI <yashi@atmark-techno.com>  Wed, 22 Jul 2015 20:55:43 +0900
+
+hermit-at-3 (3.5.0) stable; urgency=low
+
+  * Add support for Armadillo-IoTG-Std G2
+  * Fixed pull-up/down setting on Armadillo-IoTG-Std
+  * Not support the console other than ttymxc1 for Armadillo-IoTG-Std
+
+ -- Tetsuhisa KOSEKI <koseki@atmark-techno.com>  Fri, 12 Jun 2015 17:58:24 +0900
+
+hermit-at-3 (3.4.0) stable; urgency=medium
+
+  [ Hiroaki OHSAWA ]
+  * transition from at-3.2/at-3.3
+
+  [ Yasushi SHOJI ]
+  * new upstream release
+  * Add a800 seriese 1GB DRAM support
+
+ -- Yasushi SHOJI <yashi@atmark-techno.com>  Tue, 26 May 2015 21:06:03 +0900
+
+hermit-at-3.3 (3.3.1) stable; urgency=low
+
+  * Fixed pull-up/down setting on Armadillo-IoTG-Std
+  * Add support for UART3 on Armadillo-IoTG-Std
+
+ -- Daisuke Mizobuchi <mizo@atmark-techno.com>  Mon, 26 Jan 2015 10:32:08 +0900
+
+hermit-at-3.3 (3.3.0) stable; urgency=low
+
+  * Fixed memory map on Armadillo-IoTG-Std
+
+ -- Tetsuhisa KOSEKI <koseki@atmark-techno.com>  Sat, 6 Dec 2014 15:14:50 +0900
+
+hermit-at-3.3 (3.3.0-rc2) stable; urgency=low
+
+  * Add support for Armadillo-IoTG-Std
+
+ -- Tetsuhisa KOSEKI <koseki@atmark-techno.com>  Tue, 2 Dec 2014 20:27:30 +0900
+
+hermit-at-3.3 (3.3.0-rc1) stable; urgency=low
+
+  * Add support for Armadillo-4x0
+
+ -- Daisuke Mizobuchi <mizo@atmark-techno.com>  Mon, 10 Nov 2014 14:05:30 +0900
+
+hermit-at-3.2 (3.2.4) stable; urgency=low
+
+  * Changed Armadillo-8x0 DBSC arbitration
+
+ -- Daisuke Mizobuchi <mizo@atmark-techno.com>  Thu, 20 Dec 2013 14:21:14 +0900
+
+hermit-at-3.2 (3.2.3) stable; urgency=low
+
+  * Fixed pin definitions on Armadillo-840
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Wed, 3 Jul 2013 15:27:05 +0900
+
+hermit-at-3.2 (3.2.2) stable; urgency=low
+
+  * Fixed memory map on Armadillo-840
+  * Changed to read-only at license/firmware regions on Armadillo-810/840
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Tue, 7 May 2013 18:50:45 +0900
+
+hermit-at-3.2 (3.2.1) stable; urgency=low
+
+  * Fixed DBGMD_EN_N state on Armadillo-810
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Wed, 27 Feb 2013 13:15:19 +0900
+
+hermit-at-3.2 (3.2.0) stable; urgency=low
+
+  * Added support for Armadillo-810 and Armadillo-840
+  * Added password-lock mechanism
+  * Added support for squashfs-root
+  * Fixed ARM/THUMB interworking (for gcc-4.5 or later)
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Wed, 6 Feb 2013 15:31:50 +0900
+
+hermit-at-3.1 (3.1.0) stable; urgency=low
+
+  * Renamed bootloader binary from loader-armadillo8x0 to loader-armadillo800eva-mmcsd
+  * Added support for I/D cache on ARMv7/RMA1
+  * Fixed wrong Linux boot parameter (ATAG address) on ARM
+  * Implemented TFTP retry mechanism
+
+  * Affected binary files by this update:
+        loader-armadillo800eva-mmcsd
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Mon, 11 Jun 2012 13:41:40 +0900
+
+hermit-at-3.0 (3.0.0) stable; urgency=low
+
+  * Add support for Armadillo-800EVA
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Wed, 21 Dec 2011 20:43:47 +0900
+
+hermit-at (2.1.3) unstable; urgency=low
+
+  * Add support for Armadillo-460
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Tue, 28 Jun 2011 15:37:18 +0900
+
+hermit-at (2.1.2) unstable; urgency=low
+
+  * Fixed zero power up wait period at SD boot time for Armadillo-400
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Mon, 18 Apr 2011 17:57:48 +0900
+
+hermit-at (2.1.1) unstable; urgency=low
+
+  * Fixed Armadillo-500 Erratum No.7
+  * Fixed SD card detection bug on Armadillo-400
+  * Fixed RAM detection bug on Armadillo-500
+  * Add support for SDHC driver on Armadillo-500
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Thu, 24 Mar 2011 15:30:48 +0900
+
+hermit-at (2.1.0) unstable; urgency=low
+
+  * Adapted to new ethernet framework
+  * Fixed erasing bug on hermit host
+  * Add support for ERASE function on WIN32
+  * Add support for COM10 or greater on WIN32
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Mon, 20 Dec 2010 20:14:48 +0900
+
+hermit-at (2.0.8) unstable; urgency=low
+
+  * ext2: fixed group description parsing for inode info retreival.
+  * ext2: read just as much as we need when searching for kernel image.
+  * sdhc: wait 80 clocks for initialization.  this fixed reboot failure.
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Fri, 12 Nov 2010 15:04:12 +0900
+
+hermit-at (2.0.7) stable; urgency=low
+
+  * fixed a brown paper bag bug of checking ip fragmentation check
+  * make tftp layer to always wait for OACK when using the option "blksize"
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Wed, 13 Oct 2010 15:55:00 +0900
+
+hermit-at (2.0.6) stable; urgency=low
+
+  * fixed initializing UART for i.mx25
+  * Changed to always set up Armadillo-4x0's STANDARD_CONSOLE
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Fri, 8 Oct 2010 14:03:00 +0900
+
+hermit-at (2.0.5) stable; urgency=low
+
+  * fixed an out of memory error which occurs when downloading a file via tftp.
+    the file must be the same size as the given target region to trigger this
+    bug.
+  * implemented new tftp capability defined by RFC2347 and RFC2348.
+  * code cleanup
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Thu, 16 Sep 2010 18:31:00 +0900
+
+hermit-at (2.0.4) stable; urgency=low
+
+  * Changed internal memory map for Armadillo-400
+  * fixed buffer overrun when downloading a file using tftp
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Tue, 31 Aug 2010 19:55:00 +0900
+
+hermit-at (2.0.3) stable; urgency=low
+
+  * Add filetype support for ext2 and ext3 to IDE/MMC boot
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Tue, 3 Aug 2010 14:24:00 +0900
+
+hermit-at (2.0.2) stable; urgency=low
+
+  * fix mmcsd boot selection bug
+  * Add support for ARM architecture version 5 or later to lib1funcs
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Wed, 2 Jun 2010 17:20:00 +0900
+
+hermit-at (2.0.1) stable; urgency=low
+
+  * pass only major hardware revision number to the kernel on Armadillo-4x0
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Tue, 27 Apr 2010 21:00:00 +0900
+
+hermit-at (2.0.0) stable; urgency=low
+
+  * Introduce the Kbuild system for build-time configuration
+  * ARM: enable Thumb Interworking and build Thumb binaries for all targets
+  * Add support for Armadillo-4x0
+  * Major directory structure changes
+  * No longer support Armadillo and Armadillo-J
+  * Remove support for CS89712 and EP7211
+  * Add MMC/SD core stack
+  * Generalize all commands and core stacks
+  * Various bug fixes
+  * Other overall structure changes
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Mon, 8 Mar 2010 21:30:00 +0900
+
+hermit-at (1.1.21) stable; urgency=low
+
+  * Add 'md5sum' command
+  * Clean D-Cache before invalidate on A300
+  * Updated AUTO-REFRESH interval on A500
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Wed, 18 Mar 2009 14:41:00 +0900
+
+hermit-at (1.1.20) stable; urgency=low
+
+  * Add 'fx' and 'zero' profile for Armadillo-500
+    The 'fx' profile is a profile for Armadillo-500 FX. The 'zero' profile
+    is a new profile to create a safe hermit which can be used for all
+    Armadillo-500 based products.
+  * Updated 'boot' profile for Armadillo-500
+    The 'boot' profile is updated to support all Armadillo-500 based products,
+    based on newly created 'zero' profile.
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Tue, 14 Oct 2008 20:20:00 +0900
+
+hermit-at (1.1.19) stable; urgency=low
+
+  * Updated EP93xx ethernet driver
+  * Fixed GPIO re-initialization problem in hmain() on Armadillo2x0
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Wed, 8 Oct 2008 16:30:00 +0900
+
+hermit-at (1.1.18) stable; urgency=low
+
+  * Fixed ARM1136 errata 411920/364296
+  * Updated CFLAGS for suzaku
+  * Support for using multistep FIFO on SPI flash I/O part
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Mon, 18 Aug 2008 11:31:00 +0900
+
+hermit-at (1.1.17) stable; urgency=low
+
+  * Updated ide card detection to A300
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Wed, 9 Apr 2008 15:00:00 +0900
+
+hermit-at (1.1.16) stable; urgency=low
+
+  * Updated delay() to fix A300 CF bootup problem
+
+ -- Masahiro Hanada <hanada@atmark-techno.com>  Mar, 14 Fri 2008 19:58:00 +0900
+
+hermit-at (1.1.15) stable; urgency=low
+
+  * Use I-cache and D-cache on SUZAKU (Microblaze and PowerPC)
+  * Tune up SPI reading and writeing logic
+  * The optimization option is changed to -O2 on SUZAKU
+
+ -- Masahiro Hanada <hanada@atmark-techno.com>  Fri, 15 Feb 2008 20:15:00 +0900
+
+hermit-at (1.1.14) stable; urgency=low
+
+  * Add "all" flash region to A9/A2x0/A300/Suzaku
+  * Add support for multiple flash sizes on A500
+  * Add support for multiple dram sizes on A500
+  * Changed DDR initialization on A500
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Tue, 29 Jan 2008 13:30:00 +0900
+
+hermit-at (1.1.13) stable; urgency=low
+
+  * Use ATAG_INITRD2 for all ARM-products instead of ATAG_INITRD
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Mon, 10 Dec 2007 18:50:00 +0900
+
+hermit-at (1.1.12) stable; urgency=low
+
+  * A500: Init I2C to ensure correct operation of I2C bus
+  * A210: Change GPIO setting to avoid reset after boot
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Tue, 16 Oct 2007 17:15:00 +0900
+
+hermit-at (1.1.11) stable; urgency=low
+
+  * Add support for SUZAKU SZ410
+  * fixed slave select method in SPI-Flash driver
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Mon, 1 Oct 2007 16:50:00 +0900
+
+hermit-at (1.1.10) stable; urgency=low
+
+  * changed Armadillo-5x0 bus-timing
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Fri, 14 Sep 2007 17:50:00 +0900
+
+hermit-at (1.1.9) stable; urgency=low
+
+  * add product Armadillo-5x0
+  * changed getchar,putcher I/F
+  * add flash intel driver
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Mon, 23 Jul 2007 18:20:00 +0900
+
+hermit-at (1.1.8) stable; urgency=low
+
+  * A9: Add variable clock setting capability
+  * A7: initialize flash subsystem
+  * Add removed "flash-1" region back
+  * fixed: Armadillo-J POST byte-swap bug
+  * Remove Armadillo-J S-type from Debian rules
+  * remove git-ish version file check and .GIT version string
+  * add clean target "HERMIT-VERSION-FILE"
+  * auto version number
+  * remove chmod when build
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Tue, 30 Jan 2007 20:10:00 +0900
+
+hermit-at (1.1.7) stable; urgency=low
+
+  * Add product Armadillo-3x0
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Thu, 28 Dec 2006 16:18:00 +0900
+
+hermit-at (1.1.6) stable; urgency=low
+
+  * changed GPIO setting for Armadillo-9
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Thu, 30 Nov 2006 15:22:00 +0900
+
+hermit-at (1.1.5) stable; urgency=low
+
+  * Remove ChangeLog
+  * fix DRAM detect code for Armadillo-2x0
+  * Remove setmac command
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Tue, 17 Oct 2006 17:24:00 +0900
+
+hermit-at (1.1.4) stable; urgency=low
+
+  * changed LED and UART output port for Armadillo-220/230/240.
+
+ -- Masahir Hanada <hanada@atmark-techno.com>  Fri, 24 Aug 2006 00:52:00 +0900
+
+hermit-at (1.1.3) stable; urgency=low
+
+  * fix long standing memcpy optimization bug
+
+ -- Yasushi SHOJI <yashi@atmark-techno.com>  Fri, 11 Aug 2006 00:25:27 +0900
+
+hermit-at (1.1.2) unstable; urgency=low
+
+  * Add red led support for all suzaku boards
+
+ -- Nakai Masahiro <nakai@atmark-techno.com>  Wed,  9 Aug 2006 20:20:18 +0900
+
+hermit-at (1.1.1) unstable; urgency=low
+
+  * Fix suzaku cache handling
+
+ -- Yasushi SHOJI <yashi@atmark-techno.com>  Fri, 21 Jul 2006 01:01:15 +0900
+
+hermit-at (1.1.0) stable; urgency=low
+
+  * This is a pretty big change since the last one; here goes:
+  * Big flash code refactor and generalization.  we now have a generic flash
+    layer on top of each type of flash (NOR and SPI)
+  * added support for all flash types in gunzip
+  * new type system (ie: u8, u16, u32)
+  * new compiler support for microblaze (v3.4.1)
+  * added new io accessors
+  * remove windows new line code
+  * added new --baudrate option
+  * suzaku: trun the red led on when in hmain()
+  * added a version string (ie, "v1.1.0") to the target binary files
+  * many bug fixes
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Thu, 13 Jul 2006 02:57:00 +0900
+
+hermit-at (1.0.7) stable; urgency=low
+
+  * fixed SMC Refresh Timer (Armadillo-9/Armadillo-2x0)
+  * changed multiplier and divisor for Programmable PLL(PLL1 only)
+                                                   (Armadillo-9/Armadillo-2x0)
+
+ -- Masahiro Hanada <hanada@atmark-techno.com>  Tue, 11 Jul 2006 15:01:00 +0900
+
+hermit-at (1.0.6) stable; urgency=low
+
+  * fixed Version-info output timing (Armadillo-2x0)
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Mon, 26 Jun 2006 20:30:00 +0900
+
+hermit-at (1.0.5) stable; urgency=low
+
+  * fixed tftp download padding (Armadillo-9/Armadillo-2x0)
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Mon, 12 Jun 2006 18:00:00 +0900
+
+hermit-at (1.0.4) stable; urgency=low
+
+  * add Target:Armadillo-220/230/240/210C
+
+ -- Masahiro Hanada <hanada@atmark-techno.com>  Mon, 29 May 2006 15:24:00 +0900
+
+hermit-at (1.0.4d) stable; urgency=low
+
+  * add profile Armadillo-9:eth,boot-eth Armadillo210:eth,boot-eth
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Thu, 23 Mar 2006 00:00:00 +0900
+
+hermit-at (1.0.3) stable; urgency=low
+
+  * fix boot-param bug (armadillo-210:linux.c)
+  * fix Serial Timeout (WIN32)
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Tue, 7 Mar 2006 19:05:00 +0900
+
+hermit-at (1.0.2) stable; urgency=low
+
+  * Add Target:Armadillo-210
+  * remake WIN32
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Thu, 17 Nov 2005 18:14:05 +0900
+
+hermit-at (1.0.1) stable; urgency=low
+
+  * Armadillo-J Protected the board-parameter area
+
+ -- Masahiro Nakai <nakai@atmark-techno.com>  Fri, 4 Nov 2005 18:10:00 +0900
+
+hermit-at (1.0.0) stable; urgency=low
+
+  * New upstream version
+
+ -- Yasushi SHOJI <yashi@atmark-techno.com>  Thu, 22 Sep 2005 14:34:39 +0900

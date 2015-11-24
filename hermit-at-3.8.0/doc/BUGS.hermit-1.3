@@ -1,0 +1,19 @@
+
+-- Hermit doesn't support fast serial downloads.  It should switch to
+   115200 bps for serial downloads, and should support data compression.
+
+-- Hermit doesn't yet handle Ethernet retransmits correctly, so it's
+   best to use it with a dedicated NIC and either a crossover cable or
+   dedicated hub.
+
+-- The CRC32 table is duplicated between the kernel decompression code
+   and the download integrity checking code.
+
+-- Hermit should skip past locked flash blocks at the beginning of a
+   region (bumping the download after them) instead of erroring out.
+   This is probably what most people want.
+
+-- Some people have experienced problems with EDB7211 downloads using
+   10/100Mbit Ethernet switches, but found old 10Mbit hubs to work fine.
+   This may be because the MAC address change confuses the switch.  At
+   Blue Mug, we have been using crossover Ethernet cables to good effect.

@@ -1,0 +1,7 @@
+#! /bin/sh -e
+
+update-alternatives --quiet --remove hermit /usr/bin/hermit-@VVER@
+
+#DEBHELPER#
+
+exit 0

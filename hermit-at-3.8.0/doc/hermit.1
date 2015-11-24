@@ -1,0 +1,148 @@
+.TH HERMIT "1" "26 January 2001" "Blue Mug, Inc."
+.SH NAME
+hermit \- flash-aware downloader and terminal program
+.SH SYNOPSIS
+.BR hermit " [GENERAL OPTIONS] [COMMAND [COMMAND OPTIONS]] ..."
+.SH DESCRIPTION
+.PP
+Hermit is a flash downloader/boot loader combination.  The Hermit package
+consists of a single host-side downloader program, `hermit' (which is
+documented in this manual page), along with a target-specific boot loader
+for each supported target.
+.PP
+Hermit uses a target-provided memory map, allowing the host side to
+download to an arbitrary target without prior configuration.  The memory
+map includes flash erase blocking information such as sizes, addresses,
+and locking characteristics.  The host-side downloader is aware of the
+programming characteristics of flash, and will issue erase and program
+commands as needed to download an image.  Download images will
+automatically be fragmented so as not to span multiple flash erase blocks
+with a single program command.
+.PP
+Hermit is designed as a downloader, not as a system monitor.  All
+operation on the target is polling (not interrupt driven), and it is
+not possible to return to the target boot loader after another system
+has been loaded.
+.PP
+The target-side loader relocates itself to RAM before running, allowing
+it to reprogram its own image in Flash-ROM.
+.SS COMMANDS
+At least one of the following commands must be given on the command line.
+More than one command may be given; for example, the download command
+may be given more than once in order to download two files to different
+memory areas using a single connection to the target.  Commands are
+executed in the order given; `download' followed by `terminal' will
+complete the download before entering terminal mode.  Command options
+(see section below) apply to the preceding command.
+.TP
+.B download
+Download a file.  You must specify an input file, and either an address or
+a named memory region.  If a named memory region is specified, the given
+input file must fit entirely within the region.  An address allows the
+input file to span multiple memory regions, although the download range
+may not span gaps in the memory map.
+.IP
+Domnloads are checked for integrity using the CRC-32 checksum.
+.TP
+.B help
+Display command line help.
+.TP
+.B map
+Display the target's memory map.
+.TP
+.B terminal
+Enter interactive terminal mode.
+.TP
+.B upload
+Upload a file (not yet implemented).
+.SS GENERAL OPTIONS
+These options affect hermit operation in general, not the specific
+command they follow.
+.TP
+\fB--ethernet\fP
+Use Ethernet to communicate with the target.  The default is to use only
+serial communications.  Note that even with this option, the control
+channel uses a serial link; Ethernet is not a replacement for serial.
+.TP
+\fB-N\fP\fIifname\fP, \fB--netif\fP=\fIifname\fP
+Specify a network interface to be used for Ethernet communications.  The
+default interface is eth0.
+.TP
+\fB-P\fP\fIportname\fP, \fB--port\fP=\fIportname\fP
+Specify a serial port to be used for serial communications.  The
+default port is /dev/ttyS0.
+.TP
+\fB--remote-mac\fP=\fImac\fP
+Specify a MAC address for the remote end of the communication.  This
+option may not be needed; an Ethernet-capable target may already have a
+unique MAC address.  The address is specified using standard Ethernet
+notation, i.e. ``aa:bb:cc:dd:ee:ff''.
+.IP
+If you need a temporary Ethernet address, just pick one at random.
+Unfortunately, there is no reserved internal-use MAC address range,
+as there is with IP network addressing.  Make sure the address you pick
+doesn't have the high bit of the second octet (the multicast bit) set;
+it's probably safest to just use 00 as the first octet.
+.IP
+Don't distribute anything with a MAC address which you didn't get from
+the IEEE.
+.TP
+\fB-v\fP, \fB--verbose\fP
+Generate verbose output.
+.TP
+\fB-V\fP, \fB--version\fP
+Print version string and exit.
+.SS DOWNLOAD COMMAND OPTIONS
+These options apply only to the preceding \fBdownload\fP command.
+.TP
+\fB-a\fP\fIaddress\fP, \fB--address\fP=\fIaddress\fP
+Specify a memory address (pointer) on the target.
+.TP
+\fB--force-locked\fP
+Force writes to flash blocks marked as locked by the target.  Note that
+this may not actually enable writes (you'll sometimes have to change
+a jumper or a GPIO output to set the /WP line); this option just turns
+off the locked-block safety feature in the hermit downloader.
+.TP
+\fB-i\fP\fIfilepath\fP, \fB--input-file\fP=\fIfilepath\fP
+Specify an input file for download.  Hermit cannot download from
+standard input, since it needs to know the file size before beginning
+the download process.
+.TP
+\fB-r\fP\fIname\fP, \fB--region\fP=\fIname\fP
+Specify a named memory region on the target.  The list of memory regions
+is retrieved from the target; to display the list, use the \fBmap\fP
+command.
+.SS MAP COMMAND OPTIONS
+These options apply only to the preceding \fBmap\fP command.
+.TP
+\fB--anonymous-regions\fP
+Show anonymous memory regions (regions without names) in the memory map.
+Anonymous regions are usually omitted from output, as they typically
+represent flash erase blocks.
+.SS ENVIRONMENT VARIABLES
+Some command functionality can be duplicated by setting environment
+variables.  Values specified on the command line override values
+provided by the environment.
+.TP
+\fBHERMIT_NETIF\fP
+Sets network interface for Ethernet downloads; identical to `--netif'.
+.TP
+\fBHERMIT_PORT\fP
+Sets port (tty) for serial communications; identical to `--port'.
+.SH BUGS
+.IP \(bu 4
+Serial downloads take place at console speed (9600 baud).  Incentive to
+fix this is low given the existence of Ethernet download.
+.IP \(bu 4
+Ethernet retransmits don't really work, and Ethernet polling never times
+out.
+.IP \(bu 4
+See the BUGS section in the distribution for more.
+.SH NOTES
+Bootstrapping Hermit onto a new evaluation board can be a tricky process
+and can involve another, simpler bootstrap download program.  See the
+README.<target> file in the Hermit documentation directory for
+instructions on this process.
+.SH AUTHOR
+Mike Touloumtzis <miket@bluemug.com>

@@ -1,0 +1,647 @@
+choice
+	prompt "eSDHC2 select function "
+	default AIOTG_STD_ESDHC2_SD
+
+config AIOTG_STD_ESDHC2_SD
+	bool "SD"
+
+config AIOTG_STD_ESDHC2_SD_AWLAN
+	bool "AWLAN"
+
+endchoice
+
+config AIOTG_STD_IS_ESDHC2_SD_AWLAN
+	int
+	default 0 if !AIOTG_STD_ESDHC2_SD_AWLAN
+	default 1 if AIOTG_STD_ESDHC2_SD_AWLAN
+
+choice
+	prompt "USB Port Select"
+	default AIOTG_STD_USB_CON7
+
+config AIOTG_STD_USB_CON7
+	bool "CON7 - Base Board"
+
+config AIOTG_STD_USB_CON1
+	bool "CON1 - Add-On Board"
+
+endchoice
+
+config AIOTG_STD_IS_USB_CON1
+	int
+	default 0 if !AIOTG_STD_USB_CON1
+	default 1 if AIOTG_STD_USB_CON1
+
+config AIOTG_STD_ADDON_AUTO_DETECT
+	bool "Add-On Module Auto Detect"
+	default y
+
+config AIOTG_STD_EXTIF_OPTIONS
+	bool
+	default y if !AIOTG_STD_ADDON_AUTO_DETECT
+
+menu  "Extension I/F Options"
+	depends on AIOTG_STD_EXTIF_OPTIONS
+
+config AIOTG_STD_UART1
+	bool "Enable UART1 at CON1/CON2"
+	default n
+	help
+	  Enable UART1 at CON1/CON2
+
+	  CON1_7/CON2_41: UART1_RXD
+	  CON1_8/CON2_40: UART1_TXD
+	select AIOTG_STD_CON1_7_CON2_41_UART1_RXD
+	select AIOTG_STD_CON1_8_CON2_40_UART1_TXD
+
+config AIOTG_STD_UART1_HW_FLOW
+	bool "Enable UART1 HW flow control at CON1/CON2"
+	default n
+	depends on AIOTG_STD_UART1
+	help
+	  Enable UART1 HW flow control at CON1/CON2
+
+	   CON1_9/CON2_7/CON2_39: UART1_RTS
+	  CON1_10/CON2_8/CON2_38: UART1_CTS
+	select AIOTG_STD_CON1_9_CON2_7_39_UART1_RTS
+	select AIOTG_STD_CON1_10_CON2_8_38_UART1_CTS
+
+config AIOTG_STD_UART3
+	bool "Enable UART3 at CON1/CON2"
+	default n
+	help
+	  Enable UART3 at CON1/CON2
+
+	  CON1_16/CON2_49: UART3_RXD
+	  CON1_17/CON2_48: UART3_TXD
+	select AIOTG_STD_CON1_16_CON2_49_UART3_RXD
+	select AIOTG_STD_CON1_17_CON2_48_UART3_TXD
+
+config AIOTG_STD_UART3_HW_FLOW
+	bool "Enable UART3 HW flow control at CON1/CON2"
+	default n
+	depends on AIOTG_STD_UART3
+	help
+	  Enable UART3 HW flow control at CON1/CON2
+
+	  CON1_18/CON2_47: UART3_RTS
+	  CON1_19/CON2_46: UART3_CTS
+	select AIOTG_STD_CON1_18_CON2_47_UART3_RTS
+	select AIOTG_STD_CON1_19_CON2_46_UART3_CTS
+
+config AIOTG_STD_UART4_KPP
+	bool "Enable UART4 at CON1/CON2 KPP Pad"
+	default n
+	help
+	  Enable UART4 at CON1/CON2 KPP Pad
+
+	  CON1_20/CON2_20/CON2_45: UART4_RXD
+	  CON1_21/CON2_21/CON2_44: UART4_TXD
+	select AIOTG_STD_CON1_20_CON2_20_45_UART4_RXD
+	select AIOTG_STD_CON1_21_CON2_21_44_UART4_TXD
+
+config AIOTG_STD_UART4_HW_FLOW_KPP
+	bool "Enable UART4 HW flow control at CON1/CON2 KPP Pad"
+	default n
+	depends on AIOTG_STD_UART4_KPP
+	help
+	  Enable UART4 HW flow control at CON1/CON2 KPP Pad
+
+	  CON1_22/CON2_22/CON2_43: UART4_RTS
+	  CON1_23/CON2_23/CON2_42: UART4_CTS
+	select AIOTG_STD_CON1_22_CON2_22_43_UART4_RTS
+	select AIOTG_STD_CON1_23_CON2_23_42_UART4_CTS
+
+config AIOTG_STD_UART4_LCD
+	bool "Enable UART4 at CON1 LCD Pad"
+	default n
+	depends on !AIOTG_STD_UART4_KPP
+	help
+	  Enable UART4 at CON1 KPP Pad
+
+	  CON1_41: UART4_RXD
+	  CON1_40: UART4_TXD
+	select AIOTG_STD_CON1_41_UART4_RXD
+	select AIOTG_STD_CON1_40_UART4_TXD
+
+config AIOTG_STD_UART4_HW_FLOW_LCD
+	bool "Enable UART4 HW flow control at CON1 LCD Pad"
+	default n
+	depends on AIOTG_STD_UART4_LCD
+	help
+	  Enable UART4 HW flow control at CON1 LCD Pad
+
+	  CON1_39: UART4_RTS
+	  CON1_38: UART4_CTS
+	select AIOTG_STD_CON1_39_UART4_RTS
+	select AIOTG_STD_CON1_38_UART4_CTS
+
+config AIOTG_STD_UART5
+	bool "Enable UART5 at CON1/CON2"
+	default n
+	help
+	  Enable UART5 at CON1/CON2
+
+	  CON1_12/CON2_16/CON2_37: UART5_RXD
+	  CON1_13/CON2_17/CON2_36: UART5_TXD
+	select AIOTG_STD_CON1_12_CON2_16_37_UART5_RXD
+	select AIOTG_STD_CON1_13_CON2_17_36_UART5_TXD
+
+config AIOTG_STD_UART5_HW_FLOW
+	bool "Enable UART5 HW flow control at CON1/CON2"
+	default n
+	depends on AIOTG_STD_UART5
+	help
+	  Enable UART5 HW flow control at CON1/CON2
+
+	  CON1_14/CON2_12/CON2_18/CON2_35: UART5_RTS
+	  CON1_15/CON2_13/CON2_19/CON2_34: UART5_CTS
+	select AIOTG_STD_CON1_14_CON2_12_18_35_UART5_RTS
+	select AIOTG_STD_CON1_15_CON2_13_19_34_UART5_CTS
+
+config AIOTG_STD_I2C2
+	bool "Enable I2C2 at CON1/CON2"
+	default n
+	help
+	  Enable I2C2 at CON1/CON2
+
+	  CON1_3/CON2_24: I2C2_SCL
+	  CON1_4/CON2_25: I2C2_SDA
+	select AIOTG_STD_CON1_3_CON2_24_I2C2_SCL
+	select AIOTG_STD_CON1_4_CON2_25_I2C2_SDA
+
+config AIOTG_STD_I2C3_CON1_24_25
+	bool "Enable I2C3 at CON1_24/CON1_25"
+	default n
+	help
+	  Enable I2C3 at CON1_24/CON1_25
+
+	  CON1_24: I2C3_SCL
+	  CON1_25: I2C3_SDA
+	select AIOTG_STD_CON1_24_I2C3_SCL
+	select AIOTG_STD_CON1_25_I2C3_SDA
+
+config AIOTG_STD_I2C3_CON1_51_52
+	bool "Enable I2C3 at CON1_51/CON1_52"
+	default n
+	depends on !AIOTG_STD_I2C3_CON1_24_25
+	help
+	  Enable I2C3 at CON1_51/CON1_52
+
+	  CON1_52: I2C3_SCL
+	  CON1_51: I2C3_SDA
+	select AIOTG_STD_CON1_52_I2C3_SCL
+	select AIOTG_STD_CON1_51_I2C3_SDA
+
+config AIOTG_STD_SPI2
+	bool "Enable SPI2 at CON1"
+	default n
+	help
+	  Enable SPI2 at CON1
+
+	  CON1_37: CSPI2_MOSI
+	  CON1_36: CSPI2_MISO
+	  CON1_35: CSPI2_SCLK
+	  CON1_34: CSPI2_RDY
+	select AIOTG_STD_CON1_37_CSPI2_MOSI
+	select AIOTG_STD_CON1_36_CSPI2_MISO
+	select AIOTG_STD_CON1_35_CSPI2_SCLK
+	select AIOTG_STD_CON1_34_CSPI2_RDY
+
+config AIOTG_STD_SPI2_SS0
+	bool "Enable GPIO SPI2_SS0 at CON1"
+	default n
+	depends on AIOTG_STD_SPI2
+	help
+	  Enable GPIO SPI2_SS0 at CON1_50
+	select AIOTG_STD_CON1_50_GPIO_SPI2_SS0
+
+config AIOTG_STD_SPI2_SS1
+	bool "Enable GPIO SPI2_SS1 at CON1"
+	default n
+	depends on AIOTG_STD_SPI2  && !AIOTG_STD_CAN2 && !AIOTG_STD_I2C2 && !AIOTG_STD_PWM4
+	help
+	  Enable GPIO SPI2_SS1 at CON1_3/CON2_24
+	select AIOTG_STD_CON1_3_CON2_24_GPIO_SPI2_SS1
+
+config AIOTG_STD_SPI3
+	bool "Enable SPI3 at CON1/CON2"
+	default n
+	depends on !AIOTG_STD_UART5 && !AIOTG_STD_UART5_HW_FLOW
+	help
+	  Enable SPI3 at CON1/CON2
+
+	  CON1_12/CON2_16/CON2_37         : CSPI3_MOSI
+	  CON1_13/CON2_17/CON2_36         : CSPI3_MISO
+	  CON1_14/CON2_12/CON2_18/CON2_35 : CSPI3_SCLK
+	  CON1_15/CON2_13/CON2_19/CON2_34 : CSPI3_RDY
+	select AIOTG_STD_CON1_12_CON2_16_37_CSPI3_MOSI
+	select AIOTG_STD_CON1_13_CON2_17_36_CSPI3_MISO
+	select AIOTG_STD_CON1_14_CON2_12_18_35_CSPI3_SCLK
+	select AIOTG_STD_CON1_15_CON2_13_19_34_CSPI3_RDY
+
+config AIOTG_STD_SPI3_SS0
+	bool "Enable GPIO SPI3_SS0 at CON1/CON2"
+	default n
+	depends on AIOTG_STD_SPI3 && !AIOTG_STD_CAN2 && !AIOTG_STD_I2C2
+	help
+	  Enable GPIO SPI3_SS0 at CON1_4/CON2_25
+	select AIOTG_STD_CON1_4_CON2_25_GPIO_SPI3_SS0
+
+config AIOTG_STD_SPI3_SS1
+	bool "Enable GPIO SPI3_SS1 at CON1/CON2"
+	default n
+	depends on AIOTG_STD_SPI3
+	help
+	  Enable GPIO SPI3_SS1 at CON1_11/CON2_50
+	select AIOTG_STD_CON1_11_CON2_50_GPIO_SPI3_SS1
+
+config AIOTG_STD_CAN1
+	bool "Enable CAN1 at CON1"
+	default n
+	depends on !AIOTG_STD_I2C3_CON1_24_25
+	help
+	  Enable CAN1 at CON1
+
+	  CON1_24: CAN1_TXCAN
+	  CON1_25: CAN1_RXCAN
+	select AIOTG_STD_CON1_24_CAN1_TXCAN
+	select AIOTG_STD_CON1_25_CAN1_RXCAN
+
+config AIOTG_STD_CAN2
+	bool "Enable CAN2 at CON1/CON2"
+	default n
+	depends on !AIOTG_STD_I2C2
+	help
+	  Enable CAN2 at CON1/CON2
+
+	  CON1_3/CON2_24: CAN2_TXCAN
+	  CON1_4/CON2_25: CAN2_RXCAN
+	select AIOTG_STD_CON1_3_CON2_24_CAN2_TXCAN
+	select AIOTG_STD_CON1_4_CON2_25_CAN2_RXCAN
+
+config AIOTG_STD_W1
+	bool "Enable one wire at CON1_6/CON2_32"
+	default n
+	select AIOTG_STD_CON1_6_CON2_32_W1
+
+config AIOTG_STD_PWM1
+	bool "Enable PWM1 at CON1_5/CON2_33"
+	default n
+	select AIOTG_STD_CON1_5_CON2_33_PWMO1
+
+config AIOTG_STD_PWM2
+	bool "Enable PWM2 at CON1_24"
+	default n
+	depends on !AIOTG_STD_I2C3_CON1_24_25 && !AIOTG_STD_CAN1
+	select AIOTG_STD_CON1_24_PWMO2
+
+config AIOTG_STD_PWM3
+	bool "Enable PWM3 at CON1_25"
+	default n
+	depends on !AIOTG_STD_I2C3_CON1_24_25 && !AIOTG_STD_CAN1
+	select AIOTG_STD_CON1_25_PWMO3
+
+config AIOTG_STD_PWM4
+	bool "Enable PWM4 at CON1_3/CON2_24"
+	default n
+	depends on !AIOTG_STD_I2C2 && !AIOTG_STD_CAN2
+        select AIOTG_STD_CON1_3_CON2_24_PWMO4
+
+config AIOTG_STD_CON1_3_CON2_24_I2C2_SCL
+	bool
+	default n
+
+config AIOTG_STD_CON1_3_CON2_24_CAN2_TXCAN
+	bool
+	default n
+
+config AIOTG_STD_CON1_3_CON2_24_PWMO4
+	bool
+	default n
+
+config AIOTG_STD_CON1_3_CON2_24_GPIO_SPI2_SS1
+	bool
+	default n
+
+config AIOTG_STD_CON1_3_CON2_24_GPIO1_2
+	bool
+ 	default y if !AIOTG_STD_CON1_3_CON2_24_I2C2_SCL && !AIOTG_STD_CON1_3_CON2_24_CAN2_TXCAN && !AIOTG_STD_CON1_3_CON2_24_PWMO4 && !AIOTG_STD_CON1_3_CON2_24_GPIO_SPI2_SS1
+
+config AIOTG_STD_CON1_4_CON2_25_CAN2_RXCAN
+	bool
+	default n
+
+config AIOTG_STD_CON1_4_CON2_25_I2C2_SDA
+	bool
+	default n
+
+config AIOTG_STD_CON1_4_CON2_25_GPIO_SPI3_SS0
+	bool
+	default n
+
+config AIOTG_STD_CON1_4_CON2_25_GPIO1_3
+	bool
+	default y if !AIOTG_STD_CON1_4_CON2_25_I2C2_SDA && !AIOTG_STD_CON1_4_CON2_25_CAN2_RXCAN && !AIOTG_STD_CON1_4_CON2_25_GPIO_SPI3_SS0
+
+config AIOTG_STD_CON1_5_CON2_33_PWMO1
+	bool
+	default n
+
+config AIOTG_STD_CON1_5_CON2_33_GPIO1_26
+	bool
+	default y if !AIOTG_STD_CON1_5_CON2_33_PWMO1
+
+config AIOTG_STD_CON1_6_CON2_32_W1
+	bool
+	default n
+
+config AIOTG_STD_CON1_6_CON2_32_GPIO3_14
+	bool
+	default y if !AIOTG_STD_CON1_6_CON2_32_W1
+
+config AIOTG_STD_CON1_7_CON2_41_UART1_RXD
+	bool
+	default n
+
+config AIOTG_STD_CON1_7_CON2_41_GPIO4_22
+	bool
+	default y if !AIOTG_STD_CON1_7_CON2_41_UART1_RXD
+
+config AIOTG_STD_CON1_8_CON2_40_UART1_TXD
+	bool
+	default n
+
+config AIOTG_STD_CON1_8_CON2_40_GPIO4_23
+	bool
+	default y if !AIOTG_STD_CON1_8_CON2_40_UART1_TXD
+
+config AIOTG_STD_CON1_9_CON2_7_39_UART1_RTS
+	bool
+	default n
+
+config AIOTG_STD_CON1_9_CON2_7_39_GPIO4_24
+	bool
+	default y if !AIOTG_STD_CON1_9_CON2_7_39_UART1_RTS
+
+config AIOTG_STD_CON1_10_CON2_8_38_UART1_CTS
+	bool
+	default n
+
+config AIOTG_STD_CON1_10_CON2_8_38_GPIO4_25
+	bool
+	default y if !AIOTG_STD_CON1_10_CON2_8_38_UART1_CTS
+
+config AIOTG_STD_CON1_11_CON2_50_GPIO_SPI3_SS1
+	bool
+	default n
+
+config AIOTG_STD_CON1_11_CON2_50_GPIO4_21
+	bool
+	default y if !AIOTG_STD_CON1_11_CON2_50_GPIO_SPI3_SS1
+
+config AIOTG_STD_CON1_12_CON2_16_37_UART5_RXD
+	bool
+	default n
+
+config AIOTG_STD_CON1_12_CON2_16_37_CSPI3_MOSI
+	bool
+	default n
+
+config AIOTG_STD_CON1_12_CON2_16_37_GPIO1_27
+	bool
+	default y if !AIOTG_STD_CON1_12_CON2_16_37_UART5_RXD && !AIOTG_STD_CON1_12_CON2_16_37_CSPI3_MOSI
+
+config AIOTG_STD_CON1_13_CON2_17_36_UART5_TXD
+	bool
+	default n
+
+config AIOTG_STD_CON1_13_CON2_17_36_CSPI3_MISO
+	bool
+	default n
+
+config AIOTG_STD_CON1_13_CON2_17_36_GPIO1_28
+	bool
+	default y if !AIOTG_STD_CON1_13_CON2_17_36_UART5_TXD && !AIOTG_STD_CON1_13_CON2_17_36_CSPI3_MISO
+
+config AIOTG_STD_CON1_14_CON2_12_18_35_UART5_RTS
+	bool
+	default n
+
+config AIOTG_STD_CON1_14_CON2_12_18_35_CSPI3_SCLK
+	bool
+	default n
+
+config AIOTG_STD_CON1_14_CON2_12_18_35_GPIO1_29
+	bool
+	default y if !AIOTG_STD_CON1_14_CON2_12_18_35_UART5_RTS && !AIOTG_STD_CON1_14_CON2_12_18_35_CSPI3_SCLK
+
+config AIOTG_STD_CON1_15_CON2_13_19_34_UART5_CTS
+	bool
+	default n
+
+config AIOTG_STD_CON1_15_CON2_13_19_34_CSPI3_RDY
+	bool
+	default n
+
+config AIOTG_STD_CON1_15_CON2_13_19_34_GPIO1_30
+	bool
+	default y if !AIOTG_STD_CON1_15_CON2_13_19_34_UART5_CTS && !AIOTG_STD_CON1_15_CON2_13_19_34_CSPI3_RDY
+
+config AIOTG_STD_CON1_16_CON2_49_UART3_RXD
+	bool
+	default n
+
+config AIOTG_STD_CON1_16_CON2_49_GPIO2_29
+	bool
+	default y if !AIOTG_STD_CON1_16_CON2_49_UART3_RXD
+
+config AIOTG_STD_CON1_17_CON2_48_UART3_TXD
+	bool
+	default n
+
+config AIOTG_STD_CON1_17_CON2_48_GPIO2_30
+	bool
+	default y if !AIOTG_STD_CON1_17_CON2_48_UART3_TXD
+
+config AIOTG_STD_CON1_18_CON2_47_UART3_RTS
+	bool
+	default n
+
+config AIOTG_STD_CON1_18_CON2_47_GPIO2_31
+	bool
+	default y if !AIOTG_STD_CON1_18_CON2_47_UART3_RTS
+
+config AIOTG_STD_CON1_19_CON2_46_UART3_CTS
+	bool
+	default n
+
+config AIOTG_STD_CON1_19_CON2_46_GPIO3_0
+	bool
+	default y if !AIOTG_STD_CON1_19_CON2_46_UART3_CTS
+
+config AIOTG_STD_CON1_20_CON2_20_45_UART4_RXD
+	bool
+	default n
+
+config AIOTG_STD_CON1_20_CON2_20_45_GPIO3_1
+	bool
+	default y if !AIOTG_STD_CON1_20_CON2_20_45_UART4_RXD
+
+config AIOTG_STD_CON1_21_CON2_21_44_UART4_TXD
+	bool
+	default n
+
+config AIOTG_STD_CON1_21_CON2_21_44_GPIO3_2
+	bool
+	default y if !AIOTG_STD_CON1_21_CON2_21_44_UART4_TXD
+
+config AIOTG_STD_CON1_22_CON2_22_43_UART4_RTS
+	bool
+	default n
+
+config AIOTG_STD_CON1_22_CON2_22_43_GPIO3_3
+	bool
+	default y if !AIOTG_STD_CON1_22_CON2_22_43_UART4_RTS
+
+config AIOTG_STD_CON1_23_CON2_23_42_UART4_CTS
+	bool
+	default n
+
+config AIOTG_STD_CON1_23_CON2_23_42_GPIO3_4
+	bool
+	default y if !AIOTG_STD_CON1_23_CON2_23_42_UART4_CTS
+
+config AIOTG_STD_CON1_24_I2C3_SCL
+	bool
+	default n
+
+config AIOTG_STD_CON1_24_CAN1_TXCAN
+	bool
+	default n
+
+config AIOTG_STD_CON1_24_PWMO2
+	bool
+	default n
+
+config AIOTG_STD_CON1_24_GPIO1_0
+	bool
+	default y if !AIOTG_STD_CON1_24_I2C3_SCL && !AIOTG_STD_CON1_24_CAN1_TXCAN && !AIOTG_STD_CON1_24_PWMO2
+
+config AIOTG_STD_CON1_25_CAN1_RXCAN
+	bool
+	default n
+
+config AIOTG_STD_CON1_25_I2C3_SDA
+	bool
+	default n
+
+config AIOTG_STD_CON1_25_PWMO3
+	bool
+	default n
+
+config AIOTG_STD_CON1_25_GPIO1_1
+	bool
+	default y if !AIOTG_STD_CON1_25_I2C3_SDA && !AIOTG_STD_CON1_25_CAN1_RXCAN && !AIOTG_STD_CON1_25_PWMO3
+
+config AIOTG_STD_CON1_32_GPIO1_5
+	bool
+	default y
+
+config AIOTG_STD_CON1_33_GPIO1_4
+	bool
+	default y
+
+config AIOTG_STD_CON1_37_CSPI2_MOSI
+	bool
+	default n
+
+config AIOTG_STD_CON1_36_CSPI2_MISO
+	bool
+	default n
+
+config AIOTG_STD_CON1_35_CSPI2_SCLK
+	bool
+	default n
+
+config AIOTG_STD_CON1_34_CSPI2_RDY
+	bool
+	default n
+
+config AIOTG_STD_CON1_38_UART4_CTS
+	bool
+	default n
+
+config AIOTG_STD_CON1_40_UART4_TXD
+	bool
+	default n
+
+config AIOTG_STD_CON1_39_UART4_RTS
+	bool
+	default n
+
+config AIOTG_STD_CON1_41_UART4_RXD
+	bool
+	default n
+
+config AIOTG_STD_CON1_42_GPIO1_21
+	bool
+	default y
+
+config AIOTG_STD_CON1_43_GPIO1_20
+	bool
+	default y
+
+config AIOTG_STD_CON1_44_GPIO1_19
+	bool
+	default y
+
+config AIOTG_STD_CON1_45_GPIO2_19
+	bool
+	default y
+
+config AIOTG_STD_CON1_46_GPIO2_18
+	bool
+	default y
+
+config AIOTG_STD_CON1_47_GPIO2_17
+	bool
+	default y
+
+config AIOTG_STD_CON1_48_GPIO2_16
+	bool
+	default y
+
+config AIOTG_STD_CON1_49_GPIO2_15
+	bool
+	default y
+
+config AIOTG_STD_CON1_50_GPIO_SPI2_SS0
+	bool
+	default n
+
+config AIOTG_STD_CON1_50_GPIO1_25
+	bool
+	default y if !AIOTG_STD_CON1_50_GPIO_SPI2_SS0
+
+config AIOTG_STD_CON1_51_I2C3_SDA
+	bool
+	default n
+
+config AIOTG_STD_CON1_51_GPIO1_23
+	bool
+	default y if !AIOTG_STD_CON1_51_I2C3_SDA
+
+config AIOTG_STD_CON1_52_I2C3_SCL
+	bool
+	default n
+
+config AIOTG_STD_CON1_52_GPIO1_22
+	bool
+	default y if !AIOTG_STD_CON1_52_I2C3_SCL
+
+config AIOTG_STD_CON1_53_GPIO1_24
+	bool
+	default y
+
+endmenu

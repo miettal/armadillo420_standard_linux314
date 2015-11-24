@@ -1,0 +1,7 @@
+#
+# src/target/armadillo-iotg-std/Kconfig
+#
+
+if PLATFORM_ARMADILLO_IOTG_STD
+
+endif # PLATFORM_ARMADILLO_IOTG_STD
